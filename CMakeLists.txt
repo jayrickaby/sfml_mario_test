@@ -4,7 +4,12 @@ project(sfml_mario_test)
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-add_executable(sfml_mario_test src/main.cpp)
+add_executable(sfml_mario_test src/main.cpp
+        src/Player.cpp
+        src/Player.h
+        src/TextureManager.cpp
+        src/TextureManager.h
+)
 
 find_package(SFML 3.0 COMPONENTS Graphics Audio REQUIRED)
 
