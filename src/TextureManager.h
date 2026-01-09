@@ -14,7 +14,7 @@ public:
     ~TextureManager();
 
     static void initialiseTextures(const std::string& path);
-    static sf::Texture* loadTexture(const std::string& path);
+    static sf::Texture& loadTexture(const std::string& path);
 
 private:
     static std::map<std::string,sf::Texture> textures;

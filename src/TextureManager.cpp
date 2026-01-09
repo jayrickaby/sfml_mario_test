@@ -26,18 +26,15 @@ void TextureManager::initialiseTextures(const std::string& path){
     }
 }
 
-sf::Texture* TextureManager::loadTexture(const std::string& path){
+sf::Texture& TextureManager::loadTexture(const std::string& path){
     if (TextureManager::textures.size() == 0){
-        std::cout << "No textures initialised!" << std::endl;
-        return nullptr;
+        throw std::runtime_error("No textures initialised!");
     }
     else if (!TextureManager::textures.contains(path)){
-        std::cout << "Cannot find texture: \"" << path << "\"" << std::endl;
-        return nullptr;
+        throw std::runtime_error("Could not find texture: \"" + path + "\"");
     }
     else {
         std::cout << "Loaded texture: \"" << path << "\"" << std::endl;
-        sf::Texture* texture = &TextureManager::textures.at(path);
-        return texture;
+        return TextureManager::textures.at(path);
     }
 }

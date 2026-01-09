@@ -7,9 +7,7 @@ int main(){
     sf::RenderWindow window(sf::VideoMode({600,600}), "Super Mario Bros.");
 
     TextureManager::initialiseTextures("assets/textures/");
-    sf::Texture* marioSheet = TextureManager::loadTexture("assets/textures/mariosheet.png");
-    sf::Texture* luigiSheet = TextureManager::loadTexture("assets/textures/luigisheet.png");
-    sf::Sprite sprite(*marioSheet);
+    sf::Sprite sprite(TextureManager::loadTexture("assets/textures/mariosheet.png"));
 
     while (window.isOpen()){
         while (const std::optional event = window.pollEvent()){
