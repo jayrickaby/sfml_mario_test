@@ -4,25 +4,45 @@
 
 #ifndef SFML_MARIO_TEST_PLAYER_H
 #define SFML_MARIO_TEST_PLAYER_H
+#include <map>
 #include <SFML/Graphics.hpp>
+
+#include "Animation.h"
 
 class Player{
 public:
     Player();
-    void render();
-    void update();
+    void update(float deltaTime);
     void handleInput();
+    void draw(sf::RenderTarget& target);
+
+    // Getters
+    sf::Vector2f getPosition() const { return position; };
+
+    // Setters
+    void setAnimation(std::string name);
 
 private:
     // Appearance
     sf::Texture* texture;
     sf::Sprite sprite;
+    std::map<std::string, Animation> animations;
+    Animation* currentAnimation;
+    std::string currentAnimationName;
+
 
     // Physics
-    float speed;
-    float gravity;
-    float jumpStrength;
+    signed int direction;
+    signed int lastDirection;
+    const float walkSpeed;
+    const float walkAcceleration;
+    const float runSpeed;
+    const float runAcceleration;
+    const float releaseDeceleration;
+    const float gravity;
+    const float jumpStrength;
     sf::Vector2f velocity;
+    sf::Vector2f position;
     sf::FloatRect physicsBox;
 };
 

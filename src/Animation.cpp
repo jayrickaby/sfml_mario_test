@@ -52,3 +52,9 @@ void Animation::addFrame(const sf::IntRect& intRect, float duration) {
 void Animation::setFrameDurationScale(float scale) {
     frameDurationScale = scale;
 }
+
+void Animation::reset() {
+    frameDurationScale = 1.f;
+    frameTimer = 0.f;
+    currentIndex = 0;
+}

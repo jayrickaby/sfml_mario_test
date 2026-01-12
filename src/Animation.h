@@ -27,6 +27,7 @@ public:
     void addFrame(const sf::IntRect& intRect);
     void addFrame(const sf::IntRect& intRect, float duration);
     void setFrameDurationScale(float scale);
+    void reset();
 
 private:
     std::vector<Frame> frames;
