@@ -38,7 +38,7 @@ private:
     const float walkAcceleration;
     const float runSpeed;
     const float runAcceleration;
-    const float releaseDeceleration;
+    const float dampening;
     const float gravity;
     const float jumpStrength;
     sf::Vector2f velocity;

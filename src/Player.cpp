@@ -12,13 +12,14 @@
 Player::Player() :
 texture(&TextureManager::loadTexture("assets/textures/mariosheet.png")),
 sprite(*texture),
+currentAnimation(nullptr),
 direction(0),
 lastDirection(1),
-walkSpeed(93.75f),
-walkAcceleration(133.59375f),
-runSpeed(153.75f),
-runAcceleration(196.875f),
-releaseDeceleration(182.8125f),
+walkSpeed(96.f),
+walkAcceleration(128.f),
+runSpeed(160.f),
+runAcceleration(196.f),
+dampening(7.5f),
 gravity(900.f),
 jumpStrength(300.f),
 velocity({0,0}),
@@ -45,20 +46,15 @@ void Player::update(float deltaTime) {
     handleInput();
     //@TODO Fix Origin Issue
     sprite.setOrigin(sprite.getLocalBounds().getCenter());
-    std::cout << sprite.getOrigin().x << " " << sprite.getOrigin().y << std::endl;
+
+    float absVelocityX = std::fabs(velocity.x);
 
     if (direction == 0) {
-        if (velocity.x > 0) {
-            velocity.x -= releaseDeceleration * deltaTime;
-            if (velocity.x < 0) {
-                velocity.x = 0;
-            }
+        if (absVelocityX < 1.f){
+            velocity.x = 0;
         }
-        else if (velocity.x < 0) {
-            velocity.x += releaseDeceleration * deltaTime;
-            if (velocity.x > 0) {
-                velocity.x = 0;
-            }
+        else {
+            velocity.x *= exp(-dampening * deltaTime);
         }
     } else {
         lastDirection = direction;
@@ -85,17 +81,14 @@ void Player::update(float deltaTime) {
     else {
         setAnimation("idle");
     }
-    float absVelocityX = std::fabs(velocity.x);
 
-    if (absVelocityX >= 105.f) {
-        currentAnimation->setFrameDurationScale(2.f/60.f);
-    }
-    else if (absVelocityX >= 52.5f) {
-        currentAnimation->setFrameDurationScale(4.f/60.f);
-    }
-    else {
-        currentAnimation->setFrameDurationScale(7.f/60.f);
-    }
+    absVelocityX = std::fabs(velocity.x);
+
+    float animationScale = (1.f - (absVelocityX / walkSpeed)) + 0.2f;
+
+    // Higher testvar = slower
+    // Lower testvar = faster
+    currentAnimation->setFrameDurationScale(14.f * animationScale / 60.f);
 
     if (currentAnimation != nullptr) {
         sprite.setTextureRect(currentAnimation->getFrameRect());
