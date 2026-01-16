@@ -44,6 +44,7 @@ void Player::handleInput() {
 void Player::update(float deltaTime) {
     handleInput();
     //@TODO Fix Origin Issue
+    sprite.setOrigin(sprite.getLocalBounds().getCenter());
     std::cout << sprite.getOrigin().x << " " << sprite.getOrigin().y << std::endl;
 
     if (direction == 0) {

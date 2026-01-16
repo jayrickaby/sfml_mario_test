@@ -15,7 +15,6 @@ int main(){
     Player player;
     sf::Clock clock;
 
-
     while (window.isOpen()){
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()){
@@ -31,7 +30,6 @@ int main(){
         player.update(deltaTime);
 
         player.draw(window);
-
         window.display();
     }
     return 0;
