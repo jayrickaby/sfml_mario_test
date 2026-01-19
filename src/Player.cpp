@@ -5,13 +5,16 @@
 #include "Player.h"
 
 #include <cmath>
+#include <iostream>
 
+#include "constants.h"
 #include "TextureManager.h"
 
 Player::Player() :
 texture(&TextureManager::loadTexture("assets/textures/mariosheet.png")),
 sprite(*texture),
 currentAnimation(nullptr),
+onGround(false),
 direction(0),
 lastDirection(1),
 walkSpeed(96.f),
@@ -19,8 +22,8 @@ walkAcceleration(128.f),
 runSpeed(160.f),
 runAcceleration(196.f),
 dampening(7.5f),
-gravity(900.f),
-jumpStrength(300.f),
+gravity(375.f),
+jumpStrength(225.f),
 velocity({0,0}),
 position({0,0}),
 physicsBox(sf::FloatRect({16,16}, {0,0})) {
@@ -32,14 +35,22 @@ physicsBox(sf::FloatRect({16,16}, {0,0})) {
     walkAnimation.addFrame(sf::IntRect({32,0}, {16,16}));
     walkAnimation.addFrame(sf::IntRect({48,0}, {16,16}));
 
+    Animation jumpAnimation;
+    jumpAnimation.addFrame(sf::IntRect({80,0}, {16,16}));
+
     animations["idle"] = idleAnimation;
     animations["walk"] = walkAnimation;
-
+    animations["jump"] = jumpAnimation;
 }
 
 void Player::update(float deltaTime) {
     handleInput();
-    sprite.setOrigin(sprite.getLocalBounds().getCenter());
+    onGround = false;
+
+    // Adjust origin once
+    if (sprite.getOrigin() != sprite.getLocalBounds().getCenter()){
+        sprite.setOrigin(sprite.getLocalBounds().getCenter());
+    }
 
     float absVelocityX = std::fabs(velocity.x);
 
@@ -60,17 +71,23 @@ void Player::update(float deltaTime) {
 
     velocity.y += gravity * deltaTime;
 
-    if (position.y >= 128 - 16) {
-        position.y = 128 - 16;
-        velocity.y = 0;
-    }
-
     position.y += velocity.y * deltaTime;
+
+    const float groundPosition = SCREEN_HEIGHT - sprite.getLocalBounds().size.y;
+
+    if (position.y >= groundPosition) {
+        position.y = groundPosition;
+        velocity.y = 0;
+        onGround = true;
+    }
 
     physicsBox.position = position;
     sprite.setPosition(physicsBox.position);
 
-    if (velocity.x != 0) {
+    if (!onGround){
+        setAnimation("jump");
+    }
+    else if (velocity.x != 0) {
         setAnimation("walk");
     }
     else {
@@ -96,6 +113,11 @@ void Player::update(float deltaTime) {
 
 void Player::handleInput() {
     direction = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
+
+    if (isKeyPressed(sf::Keyboard::Key::Space) && onGround){
+        onGround = false;
+        velocity.y -= jumpStrength;
+    }
 }
 
 void Player::draw(sf::RenderTarget& target) {

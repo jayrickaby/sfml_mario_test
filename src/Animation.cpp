@@ -17,7 +17,6 @@ void Animation::update(float deltaTime) {
     const Frame& currentFrame = frames[currentIndex];
 
     if (frameTimer >= currentFrame.duration * frameDurationScale) {
-        std::cout << frameTimer << std::endl;
         frameTimer = 0.f;
         currentIndex++;
         if (currentIndex >= frames.size()) {

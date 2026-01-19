@@ -3,13 +3,15 @@
 #include <SFML/Graphics.hpp>
 
 #include "Animation.h"
+#include "constants.h"
 #include "Player.h"
 #include "TextureManager.h"
 
 int main(){
     //@TODO FIX NON-DEBUG CRASH
+    // Might be fixed??
     sf::RenderWindow window(sf::VideoMode({600,600}), "Super Mario Bros.");
-    sf::View view(sf::Vector2f {64,64}, sf::Vector2f{128,128});
+    sf::View view(sf::Vector2f {64,64}, sf::Vector2f{SCREEN_WIDTH,SCREEN_HEIGHT});
     TextureManager::initialiseTextures("assets/textures/");
 
     Player player;
