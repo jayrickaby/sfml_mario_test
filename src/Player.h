@@ -20,7 +20,7 @@ public:
     sf::Vector2f getPosition() const { return position; };
 
     // Setters
-    void setAnimation(std::string name);
+    void setAnimation(const std::string& name);
 
 private:
     // Appearance

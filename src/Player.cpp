@@ -5,7 +5,6 @@
 #include "Player.h"
 
 #include <cmath>
-#include <iostream>
 
 #include "TextureManager.h"
 
@@ -38,13 +37,8 @@ physicsBox(sf::FloatRect({16,16}, {0,0})) {
 
 }
 
-void Player::handleInput() {
-    direction = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
-}
-
 void Player::update(float deltaTime) {
     handleInput();
-    //@TODO Fix Origin Issue
     sprite.setOrigin(sprite.getLocalBounds().getCenter());
 
     float absVelocityX = std::fabs(velocity.x);
@@ -57,6 +51,7 @@ void Player::update(float deltaTime) {
             velocity.x *= exp(-dampening * deltaTime);
         }
     } else {
+        // Needed for proper sprite flipping
         lastDirection = direction;
         velocity.x += walkSpeed * direction * deltaTime;
     }
@@ -84,24 +79,30 @@ void Player::update(float deltaTime) {
 
     absVelocityX = std::fabs(velocity.x);
 
-    float animationScale = (1.f - (absVelocityX / walkSpeed)) + 0.2f;
+    // Offsets the animationScale a little so that it looks better
+    const float animationScaleOffset = 0.4f;
+    float animationScale = (1.f - (absVelocityX / walkSpeed)) + animationScaleOffset;
 
-    // Higher testvar = slower
-    // Lower testvar = faster
+    // Higher animationScale = slower
+    // Lower animationScale = faster
     currentAnimation->setFrameDurationScale(14.f * animationScale / 60.f);
 
     if (currentAnimation != nullptr) {
         sprite.setTextureRect(currentAnimation->getFrameRect());
-        sprite.setScale({lastDirection,1.f});
+        sprite.setScale({1.f * lastDirection,1.f});
         currentAnimation->update(deltaTime);
     }
+}
+
+void Player::handleInput() {
+    direction = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
 }
 
 void Player::draw(sf::RenderTarget& target) {
     target.draw(sprite);
 }
 
-void Player::setAnimation(std::string name) {
+void Player::setAnimation(const std::string& name) {
     if (currentAnimationName == name){
       return;
     }
