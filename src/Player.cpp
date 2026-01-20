@@ -22,8 +22,8 @@ walkAcceleration(128.f),
 runSpeed(160.f),
 runAcceleration(196.f),
 dampening(7.5f),
-gravity(375.f),
-jumpStrength(225.f),
+gravity(175.f),
+jumpStrength(125.f),
 velocity({0,0}),
 position({0,0}),
 physicsBox(sf::FloatRect({16,16}, {0,0})) {
@@ -35,11 +35,15 @@ physicsBox(sf::FloatRect({16,16}, {0,0})) {
     walkAnimation.addFrame(sf::IntRect({32,0}, {16,16}));
     walkAnimation.addFrame(sf::IntRect({48,0}, {16,16}));
 
+    Animation skidAnimation;
+    skidAnimation.addFrame(sf::IntRect({64,0}, {16,16}));
+
     Animation jumpAnimation;
     jumpAnimation.addFrame(sf::IntRect({80,0}, {16,16}));
 
     animations["idle"] = idleAnimation;
     animations["walk"] = walkAnimation;
+    animations["skid"] = skidAnimation;
     animations["jump"] = jumpAnimation;
 }
 
@@ -84,17 +88,24 @@ void Player::update(float deltaTime) {
     physicsBox.position = position;
     sprite.setPosition(physicsBox.position);
 
+    absVelocityX = std::fabs(velocity.x);
+
     if (!onGround){
         setAnimation("jump");
     }
     else if (velocity.x != 0) {
-        setAnimation("walk");
+        if ((direction == 1 && velocity.x > 0) || (direction == -1 && velocity.x < 0)){
+            setAnimation("walk");
+        }
+        // Application of walk acceleration means that you will never actually achieve absVelocityX >= walkSpeed.
+        // Subtracting walkAcceleration from the walkSpeed means a feasible value can be achieved
+        else if (currentAnimationName != "skid" && absVelocityX >= walkSpeed - walkAcceleration){
+            setAnimation("skid");
+        }
     }
     else {
         setAnimation("idle");
     }
-
-    absVelocityX = std::fabs(velocity.x);
 
     // Offsets the animationScale a little so that it looks better
     const float animationScaleOffset = 0.4f;
