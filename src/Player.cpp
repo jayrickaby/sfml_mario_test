@@ -5,7 +5,6 @@
 #include "Player.h"
 
 #include <cmath>
-#include <iostream>
 
 #include "constants.h"
 #include "TextureManager.h"
@@ -15,6 +14,8 @@ texture(&TextureManager::loadTexture("assets/textures/mariosheet.png")),
 sprite(*texture),
 currentAnimation(nullptr),
 onGround(false),
+isJumping(false),
+isSkidding(false),
 direction(0),
 lastDirection(1),
 walkSpeed(96.f),
@@ -22,8 +23,8 @@ walkAcceleration(128.f),
 runSpeed(160.f),
 runAcceleration(196.f),
 dampening(7.5f),
-gravity(175.f),
-jumpStrength(125.f),
+gravity(400.f),
+jumpStrength(200.f),
 velocity({0,0}),
 position({0,0}),
 physicsBox(sf::FloatRect({16,16}, {0,0})) {
@@ -68,47 +69,56 @@ void Player::update(float deltaTime) {
     } else {
         // Needed for proper sprite flipping
         lastDirection = direction;
-        velocity.x += walkSpeed * direction * deltaTime;
+        velocity.x += walkAcceleration * direction * deltaTime;
+        velocity.x = std::clamp(velocity.x, -walkSpeed, walkSpeed);
+
+        const float skiddingThreshold = walkSpeed - walkAcceleration * deltaTime;
+
+        if ((velocity.x >= (skiddingThreshold) && direction == -1)
+            || velocity.x <= -(skiddingThreshold) && direction == 1 ){
+            isSkidding = true;
+        }
+        else if (isSkidding && (absVelocityX < EPSILON ||
+         (velocity.x > 0 && direction == 1) ||
+         (velocity.x < 0 && direction == -1))) {
+            isSkidding = false;
+         }
+
     }
-    velocity.x = std::clamp(velocity.x, -walkSpeed, walkSpeed);
+
     position.x += velocity.x * deltaTime;
 
     velocity.y += gravity * deltaTime;
 
     position.y += velocity.y * deltaTime;
 
-    const float groundPosition = SCREEN_HEIGHT - sprite.getLocalBounds().size.y;
+    constexpr float groundPosition = SCREEN_HEIGHT - 16.f;
 
     if (position.y >= groundPosition) {
         position.y = groundPosition;
         velocity.y = 0;
         onGround = true;
+        isJumping = false;
     }
 
     physicsBox.position = position;
-    sprite.setPosition(physicsBox.position);
+    sprite.setPosition(physicsBox.position - sprite.getOrigin());
 
     absVelocityX = std::fabs(velocity.x);
 
-    if (!onGround){
+
+    if (!onGround && isJumping){
         setAnimation("jump");
-    }
-    else if (velocity.x != 0) {
-        if ((direction == 1 && velocity.x > 0) || (direction == -1 && velocity.x < 0)){
-            setAnimation("walk");
-        }
-        // Application of walk acceleration means that you will never actually achieve absVelocityX >= walkSpeed.
-        // Subtracting walkAcceleration from the walkSpeed means a feasible value can be achieved
-        else if (currentAnimationName != "skid" && absVelocityX >= walkSpeed - walkAcceleration){
-            setAnimation("skid");
-        }
-    }
-    else {
+    } else if (isSkidding){
+        setAnimation("skid");
+    } else if ((velocity.x < 0 && direction == -1) || velocity.x > 0 && direction == 1){
+        setAnimation("walk");
+    } else{
         setAnimation("idle");
     }
 
     // Offsets the animationScale a little so that it looks better
-    const float animationScaleOffset = 0.4f;
+    constexpr float animationScaleOffset = 0.4f;
     float animationScale = (1.f - (absVelocityX / walkSpeed)) + animationScaleOffset;
 
     // Higher animationScale = slower
@@ -127,6 +137,7 @@ void Player::handleInput() {
 
     if (isKeyPressed(sf::Keyboard::Key::Space) && onGround){
         onGround = false;
+        isJumping = true;
         velocity.y -= jumpStrength;
     }
 }

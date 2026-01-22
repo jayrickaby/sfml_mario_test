@@ -33,6 +33,8 @@ private:
 
     // Physics
     bool onGround;
+    bool isJumping;
+    bool isSkidding;
     signed int direction;
     signed int lastDirection;
     const float walkSpeed;

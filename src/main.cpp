@@ -14,6 +14,14 @@ int main(){
     sf::View view(sf::Vector2f {64,64}, sf::Vector2f{SCREEN_WIDTH,SCREEN_HEIGHT});
     TextureManager::initialiseTextures("assets/textures/");
 
+    std::vector<sf::Sprite> groundBlocks;
+    for (int i = 0; i < 16; i++){
+        sf::Sprite groundBlock(TextureManager::loadTexture("assets/textures/grnd_tilesheet.png"));
+        groundBlock.setTextureRect(sf::IntRect({0,0}, {16,16}));
+        groundBlock.setPosition({i * 16.f, SCREEN_HEIGHT - 16.f});
+        groundBlocks.push_back(groundBlock);
+    }
+
     Player player;
     sf::Clock clock;
 
@@ -32,6 +40,11 @@ int main(){
         player.update(deltaTime);
 
         player.draw(window);
+
+        for (const auto& block : groundBlocks){
+            window.draw(block);
+        }
+
         window.display();
     }
     return 0;

@@ -1,0 +1,9 @@
+dev tools:
+
+(like minecraft)
+
+F3 + A - reload
+ - reloads textures, sounds and animations (and levels?) in their respective managers
+
+F3 + B - show hitboxes
+ - everything given a wireframe of their hitbox?

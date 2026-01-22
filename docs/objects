@@ -1,0 +1,14 @@
+## Object Template ##
+
+Name: xxx
+
+TextureRect: Pos, Size
+
+CollisionShape:
+    - Square (Top, Bottom, Left, Right)
+    - Custom Quadrilateral (Top, Bottom, Left, Right)
+    - Custom Triangle (Top, Bottom, Left, Right) (if applicable)
+
+OnCollide():
+    - Allows behaviour defined with any side of the CollisionShape.
+

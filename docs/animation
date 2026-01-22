@@ -1,0 +1,35 @@
+animation system
+
+perhaps animation are stored in files?
+
+for example:
+
+
+anim_player.json
+```
+{
+    "texture": "assets/textures/mariosheet.png",
+    "animations": [
+        {
+            "name": "idle",
+            "frames": [
+                {"pos": "0,0", "size": "16,16"}
+            ]
+        },
+        {
+            "name": "walk",
+            "frames": [
+                {"pos": "16,0", "size": "16,16", "duration": 0.1},
+                {"pos": "32,0", "size": "16,16", "duration": 0.1},
+                {"pos": "48,0", "size": "16,16", "duration": 0.1}
+            ]
+        },
+        {
+            "name": "jump",
+            "frames:" [
+                {"pos": "64,0", "size": "16,16"}
+            ]
+        }
+    ]
+}
+```
