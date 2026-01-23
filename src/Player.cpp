@@ -6,11 +6,13 @@
 
 #include <cmath>
 
+#include "AnimationManager.h"
 #include "constants.h"
 #include "TextureManager.h"
 
 Player::Player() :
 texture(&TextureManager::loadTexture("assets/textures/mariosheet.png")),
+animations(AnimationManager::loadAnimation("assets/animations/anim_player.json")),
 sprite(*texture),
 currentAnimation(nullptr),
 onGround(false),
@@ -27,26 +29,7 @@ gravity(400.f),
 jumpStrength(200.f),
 velocity({0,0}),
 position({0,0}),
-physicsBox(sf::FloatRect({16,16}, {0,0})) {
-    Animation idleAnimation;
-    idleAnimation.addFrame(sf::IntRect({0,0}, {16,16}));
-
-    Animation walkAnimation;
-    walkAnimation.addFrame(sf::IntRect({16,0}, {16,16}));
-    walkAnimation.addFrame(sf::IntRect({32,0}, {16,16}));
-    walkAnimation.addFrame(sf::IntRect({48,0}, {16,16}));
-
-    Animation skidAnimation;
-    skidAnimation.addFrame(sf::IntRect({64,0}, {16,16}));
-
-    Animation jumpAnimation;
-    jumpAnimation.addFrame(sf::IntRect({80,0}, {16,16}));
-
-    animations["idle"] = idleAnimation;
-    animations["walk"] = walkAnimation;
-    animations["skid"] = skidAnimation;
-    animations["jump"] = jumpAnimation;
-}
+physicsBox(sf::FloatRect({16,16}, {0,0})) {}
 
 void Player::update(float deltaTime) {
     handleInput();
@@ -59,6 +42,7 @@ void Player::update(float deltaTime) {
 
     float absVelocityX = std::fabs(velocity.x);
 
+    // @TODO fix skidding nitwit
     if (direction == 0) {
         if (absVelocityX < 1.f){
             velocity.x = 0;

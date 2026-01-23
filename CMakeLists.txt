@@ -12,13 +12,24 @@ add_executable(sfml_mario_test src/main.cpp
         src/Animation.cpp
         src/Animation.h
         src/constants.h
+        src/AnimationManager.cpp
+        src/AnimationManager.h
 )
 
 find_package(SFML 3.0 COMPONENTS Graphics Audio REQUIRED)
 
+include(FetchContent)
+
+FetchContent_Declare(
+        json
+        GIT_REPOSITORY https://github.com/nlohmann/json.git
+        GIT_TAG v3.12.0
+)
+FetchContent_MakeAvailable(json)
+
 install(TARGETS sfml_mario_test RUNTIME DESTINATION bin)
 
-target_link_libraries(sfml_mario_test PRIVATE SFML::Graphics SFML::Audio)
+target_link_libraries(sfml_mario_test PRIVATE SFML::Graphics SFML::Audio nlohmann_json::nlohmann_json)
 
 # Copy Assets Folder
 add_custom_command(TARGET sfml_mario_test POST_BUILD

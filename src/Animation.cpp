@@ -4,8 +4,6 @@
 
 #include "Animation.h"
 
-#include <iostream>
-
 void Animation::update(float deltaTime) {
     if (!isAnimated()) {
         frameTimer = 0.f;

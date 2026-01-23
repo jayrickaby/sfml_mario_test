@@ -2,8 +2,8 @@
 // Created by jay on 10/01/2026.
 //
 
-#ifndef SFML_MARIO_TEST_ANIMATIONMANAGER_H
-#define SFML_MARIO_TEST_ANIMATIONMANAGER_H
+#ifndef SFML_MARIO_TEST_ANIMATION_H
+#define SFML_MARIO_TEST_ANIMATION_H
 #include <SFML/Graphics.hpp>
 
 struct Frame {
@@ -37,4 +37,4 @@ private:
 };
 
 
-#endif //SFML_MARIO_TEST_ANIMATIONMANAGER_H
+#endif //SFML_MARIO_TEST_ANIMATION_H

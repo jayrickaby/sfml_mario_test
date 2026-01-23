@@ -10,18 +10,21 @@
 std::map<std::string,sf::Texture> TextureManager::textures = {};
 
 void TextureManager::initialiseTextures(const std::string& path){
+    if (!std::filesystem::is_directory(path)){
+        throw std::runtime_error("Could not find directory: \"" + path + "\"");
+    }
     const std::filesystem::path directory{path};
 
-    for (auto const& dir_entry : std::filesystem::directory_iterator{directory}){
-        auto texturePath = dir_entry.path().string();
+    for (auto const& dirEntry : std::filesystem::directory_iterator{directory}){
+        auto texturePath = dirEntry.path().string();
 
         // Only accept .png
-        if (dir_entry.path().extension().string() == ".png"){
+        if (dirEntry.path().extension().string() == ".png"){
             TextureManager::textures.emplace(texturePath, sf::Texture(texturePath));
-            std::cout << "Initialised texture: " << (dir_entry) << std::endl;
+            std::cout << "Initialised texture: " << (dirEntry) << std::endl;
         }
         else{
-            std::cout << "Rejected file: " << (dir_entry) << std::endl;
+            std::cout << "Incompatible texture file: " << (dirEntry) << std::endl;
         }
     }
 }

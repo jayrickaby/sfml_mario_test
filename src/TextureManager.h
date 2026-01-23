@@ -10,8 +10,8 @@
 
 class TextureManager{
 public:
-    TextureManager();
-    ~TextureManager();
+    TextureManager() = default;
+    ~TextureManager() = default;
 
     static void initialiseTextures(const std::string& path);
     static sf::Texture& loadTexture(const std::string& path);
