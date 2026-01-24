@@ -5,6 +5,8 @@
 #include "Player.h"
 
 #include <cmath>
+#include <iostream>
+#include <random>
 
 #include "AnimationManager.h"
 #include "constants.h"
@@ -12,19 +14,18 @@
 
 Player::Player() :
 texture(&TextureManager::loadTexture("assets/textures/mariosheet.png")),
-animations(AnimationManager::loadAnimation("assets/animations/anim_player.json")),
 sprite(*texture),
+animations(AnimationManager::loadAnimation("assets/animations/anim_player.json")),
 currentAnimation(nullptr),
 onGround(false),
 isJumping(false),
 isSkidding(false),
 direction(0),
-lastDirection(1),
 walkSpeed(96.f),
 walkAcceleration(128.f),
 runSpeed(160.f),
 runAcceleration(196.f),
-dampening(7.5f),
+dampening(8.5f),
 gravity(400.f),
 jumpStrength(200.f),
 velocity({0,0}),
@@ -35,91 +36,84 @@ void Player::update(float deltaTime) {
     handleInput();
     onGround = false;
 
-    // Adjust origin once
-    if (sprite.getOrigin() != sprite.getLocalBounds().getCenter()){
-        sprite.setOrigin(sprite.getLocalBounds().getCenter());
+    velocity.x += walkAcceleration * deltaTime * direction;
+
+    if (direction == 0){
+        velocity.x *= std::exp(-dampening * deltaTime);
+        if (velocity.x < 1.f && velocity.x > -1.f){
+            velocity.x = 0.f;
+        }
     }
 
-    float absVelocityX = std::fabs(velocity.x);
-
-    // @TODO fix skidding nitwit
-    if (direction == 0) {
-        if (absVelocityX < 1.f){
-            velocity.x = 0;
-        }
-        else {
-            velocity.x *= exp(-dampening * deltaTime);
-        }
-    } else {
-        // Needed for proper sprite flipping
-        lastDirection = direction;
-        velocity.x += walkAcceleration * direction * deltaTime;
-        velocity.x = std::clamp(velocity.x, -walkSpeed, walkSpeed);
-
-        const float skiddingThreshold = walkSpeed - walkAcceleration * deltaTime;
-
-        if ((velocity.x >= (skiddingThreshold) && direction == -1)
-            || velocity.x <= -(skiddingThreshold) && direction == 1 ){
-            isSkidding = true;
-        }
-        else if (isSkidding && (absVelocityX < EPSILON ||
-         (velocity.x > 0 && direction == 1) ||
-         (velocity.x < 0 && direction == -1))) {
-            isSkidding = false;
-         }
-
-    }
-
+    velocity.x = std::clamp(velocity.x, -walkSpeed, walkSpeed);
     position.x += velocity.x * deltaTime;
 
-    velocity.y += gravity * deltaTime;
+    constexpr float skidThresh = 90.f;
+    std::cout << velocity.x << " / " << skidThresh << std::endl;
+    if ((velocity.x >= skidThresh && direction == -1) || (velocity.x <= -skidThresh && direction == 1)){
+        isSkidding = true;
+    }
+    // We do this so that player keeps skidding until fully turned around
+    else if ((currentAnimationName == "skid") && ((velocity.x > 0.f && direction == -1 ) || (velocity.x < 0.f && direction == 1))){
+        isSkidding = true;
+    }
+    else{
+        isSkidding = false;
+    }
 
+    constexpr float GROUND_LEVEL = SCREEN_HEIGHT - 32.f;
+    velocity.y += gravity * deltaTime;
     position.y += velocity.y * deltaTime;
 
-    constexpr float groundPosition = SCREEN_HEIGHT - 16.f;
-
-    if (position.y >= groundPosition) {
-        position.y = groundPosition;
+    if (position.y >= GROUND_LEVEL){
+        position.y = GROUND_LEVEL;
         velocity.y = 0;
         onGround = true;
         isJumping = false;
     }
 
-    physicsBox.position = position;
-    sprite.setPosition(physicsBox.position - sprite.getOrigin());
-
-    absVelocityX = std::fabs(velocity.x);
-
-
-    if (!onGround && isJumping){
+    if (isJumping){
         setAnimation("jump");
-    } else if (isSkidding){
+    }
+    else if (isSkidding){
         setAnimation("skid");
-    } else if ((velocity.x < 0 && direction == -1) || velocity.x > 0 && direction == 1){
+    }
+    else if(velocity.x != 0){
         setAnimation("walk");
-    } else{
+    }
+    else{
         setAnimation("idle");
     }
+
+    const float absVelocityX = std::fabs(velocity.x);
 
     // Offsets the animationScale a little so that it looks better
     constexpr float animationScaleOffset = 0.4f;
     float animationScale = (1.f - (absVelocityX / walkSpeed)) + animationScaleOffset;
 
-    // Higher animationScale = slower
-    // Lower animationScale = faster
-    currentAnimation->setFrameDurationScale(14.f * animationScale / 60.f);
-
     if (currentAnimation != nullptr) {
+        if (direction != 0){
+            // Have to multiply int direction by a float or it'll whine about narrowing conversions
+            sprite.setScale({1.f * direction, 1.f});
+        }
+        if (sprite.getOrigin() != sprite.getLocalBounds().getCenter()){
+            sprite.setOrigin(sprite.getLocalBounds().getCenter());
+        }
+        sprite.setPosition(physicsBox.position + sprite.getOrigin());
         sprite.setTextureRect(currentAnimation->getFrameRect());
-        sprite.setScale({1.f * lastDirection,1.f});
+        currentAnimation->setFrameDurationScale(14.f * animationScale / 60.f);
         currentAnimation->update(deltaTime);
     }
+    physicsBox.position = position;
 }
 
 void Player::handleInput() {
+    // @TODO Better keyboard system so that it gets the last key pressed instead
+    // @ e.g. (sf::KeyBoard::isKeyPressed(sf::Keyboard::Key::D) && lastKeyPressed == sf::Keyboard::Key::D)
+    // @ Something like this so that there's no null-cancelling movement. Just left, right and stop.
     direction = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
 
-    if (isKeyPressed(sf::Keyboard::Key::Space) && onGround){
+    if (isKeyPressed(sf::Keyboard::Key::Space) && onGround && !isJumping){
         onGround = false;
         isJumping = true;
         velocity.y -= jumpStrength;

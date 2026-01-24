@@ -30,13 +30,11 @@ private:
     Animation* currentAnimation;
     std::string currentAnimationName;
 
-
     // Physics
     bool onGround;
     bool isJumping;
     bool isSkidding;
     signed int direction;
-    signed int lastDirection;
     const float walkSpeed;
     const float walkAcceleration;
     const float runSpeed;
