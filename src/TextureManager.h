@@ -8,12 +8,19 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
+struct TextureAtlas{
+    sf::Texture atlasTexture;
+    std::map<std::string, sf::IntRect> textures;
+};
+
 class TextureManager{
 public:
     TextureManager() = default;
     ~TextureManager() = default;
 
     static void initialiseTextures(const std::string& path);
+    static bool isTexture(const std::string& path);
+    static bool isInitialised();
     static sf::Texture& loadTexture(const std::string& path);
 
 private:

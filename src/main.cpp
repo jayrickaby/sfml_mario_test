@@ -9,27 +9,25 @@
 #include "constants.h"
 #include "Player.h"
 #include "TextureManager.h"
+#include "TileManager.h"
 
 using json = nlohmann::json;
 
 int main(){
-    //@TODO FIX NON-DEBUG CRASH
-    // Might be fixed??
     sf::RenderWindow window(sf::VideoMode({600,600}), "Super Mario Bros.");
     sf::View view(sf::Vector2f {64,64}, sf::Vector2f{SCREEN_WIDTH,SCREEN_HEIGHT});
 
     AnimationManager::initialiseAnimations("assets/animations/");
     TextureManager::initialiseTextures("assets/textures/");
-    sf::Texture* grnd_tilesheet = &TextureManager::loadTexture("assets/textures/grnd_tilesheet.png");
+    TileManager::initialiseTiles("assets/models/");
 
+    Tile groundTile = *TileManager::loadTile("ground");
 
-
-    std::vector<sf::Sprite> groundBlocks;
+    std::vector<Tile> tiles;
     for (int i = 0; i < 16; i++){
-        sf::Sprite groundBlock(*grnd_tilesheet);
-        groundBlock.setTextureRect(sf::IntRect({0,0}, {16,16}));
+        Tile groundBlock = *TileManager::loadTile("ground");
         groundBlock.setPosition({i * 16.f, SCREEN_HEIGHT - 16.f});
-        groundBlocks.push_back(groundBlock);
+        tiles.push_back(groundBlock);
     }
 
     Player player;
@@ -51,8 +49,8 @@ int main(){
 
         player.draw(window);
 
-        for (const auto& block : groundBlocks){
-            window.draw(block);
+        for (const auto& tile : tiles){
+            tile.draw(window);
         }
 
         window.display();

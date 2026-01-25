@@ -1,0 +1,3 @@
+input manager like texture manager and animation manager
+this is where player input is grabbed and stored
+the last pressed key is gotten along with the currently pressed key(s)

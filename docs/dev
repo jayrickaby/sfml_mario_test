@@ -7,3 +7,5 @@ F3 + A - reload
 
 F3 + B - show hitboxes
  - everything given a wireframe of their hitbox?
+
+this but also a menu that opens with just F3 with imgui\w

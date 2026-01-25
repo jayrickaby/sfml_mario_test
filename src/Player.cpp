@@ -49,7 +49,6 @@ void Player::update(float deltaTime) {
     position.x += velocity.x * deltaTime;
 
     constexpr float skidThresh = 90.f;
-    std::cout << velocity.x << " / " << skidThresh << std::endl;
     if ((velocity.x >= skidThresh && direction == -1) || (velocity.x <= -skidThresh && direction == 1)){
         isSkidding = true;
     }

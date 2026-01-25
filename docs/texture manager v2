@@ -1,0 +1,7 @@
+- Texture Manager initialises tile textures. A tile std::map is created that looks like this:
+    ["ground.png", sf::IntRect({0,0}, {16,16})],
+    ["brick.png", sf::IntRect({16,0}, {16,16})]
+   It also creates an texture atlas with all the blocks
+- Model Manager initialises model json files
+- Looks at where its texture is in the map and gets the intrect
+- After all models are initialised, the tiles point to the texture atlas with the intrect

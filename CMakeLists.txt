@@ -14,6 +14,8 @@ add_executable(sfml_mario_test src/main.cpp
         src/constants.h
         src/AnimationManager.cpp
         src/AnimationManager.h
+        src/TileManager.cpp
+        src/TileManager.h
 )
 
 find_package(SFML 3.0 COMPONENTS Graphics Audio REQUIRED)
@@ -25,11 +27,22 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/nlohmann/json.git
         GIT_TAG v3.12.0
 )
+FetchContent_Declare(
+        stb
+        GIT_REPOSITORY https://github.com/nothings/stb.git
+        GIT_TAG master
+)
 FetchContent_MakeAvailable(json)
+FetchContent_MakeAvailable(stb)
+
+add_library(stb_interface INTERFACE)
+target_include_directories(stb_interface INTERFACE ${stb_SOURCE_DIR})
 
 install(TARGETS sfml_mario_test RUNTIME DESTINATION bin)
 
-target_link_libraries(sfml_mario_test PRIVATE SFML::Graphics SFML::Audio nlohmann_json::nlohmann_json)
+target_link_libraries(sfml_mario_test PRIVATE SFML::Graphics SFML::Audio nlohmann_json::nlohmann_json stb_interface)
+
+set_target_properties(nlohmann_json PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
 
 # Copy Assets Folder
 add_custom_command(TARGET sfml_mario_test POST_BUILD
