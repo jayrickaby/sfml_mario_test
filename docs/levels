@@ -14,22 +14,26 @@ Size allows reiteration of tile
 Size of 16,0 => 16 of this tile rightward
 
 {
-    "globalSkinIndex": 0,
-    "playerData": {
-        "pos": {2,3}
+  "globalSkinIndex": 0,
+  "playerData": {
+    "pos": [2,3]
+  },
+  "tileData": [
+    {
+      "tile": "ground",
+      "pos": [0,0],
+      "size": [16,1],
+      "skinOverride": -1
     }
-    "tileData": [
-        {
-            "tile": "ground",
-            "pos": {0,0},
-            "size": {16,1},
-            "skinOverride": -1
-        }
-    ]
+  ]
 }
 
 
 Level Manager:
 - Initialises all levels in directory
 - Needs to be called to load a level e.g. "1-1"
--
+- If there is data currently stored, it is flushed out
+- Level is properly parsed and stored in Level Object
+    -> Player created at position (don't update)
+    -> Tiles stored in vector
+Tiles + player drawn and updated in GameLoop

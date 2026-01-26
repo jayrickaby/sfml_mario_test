@@ -7,6 +7,7 @@
 
 #include "AnimationManager.h"
 #include "constants.h"
+#include "LevelManager.h"
 #include "Player.h"
 #include "TextureManager.h"
 #include "TileManager.h"
@@ -20,16 +21,9 @@ int main(){
     AnimationManager::initialiseAnimations("assets/animations/");
     TextureManager::initialiseTextures("assets/textures/");
     TileManager::initialiseTiles("assets/models/");
+    LevelManager::initialiseLevels("assets/levels/");
 
-    Tile groundTile = *TileManager::loadTile("ground");
-
-    std::vector<Tile> tiles;
-    for (int i = 0; i < 16; i++){
-        Tile groundBlock = *TileManager::loadTile("ground");
-        groundBlock.setTextureIndex(1);
-        groundBlock.setPosition({i * 16.f, SCREEN_HEIGHT - 16.f});
-        tiles.push_back(groundBlock);
-    }
+    Level level = LevelManager::loadLevel("1-1");
 
     Player player;
     player.setPosition({0,0});
@@ -51,7 +45,7 @@ int main(){
 
         player.draw(window);
 
-        for (const auto& tile : tiles){
+        for (const auto& tile : level.tiles){
             tile.draw(window);
         }
 

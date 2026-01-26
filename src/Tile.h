@@ -8,7 +8,7 @@
 
 class Tile{
 public:
-    Tile() = default;
+    Tile();
     ~Tile() = default;
 
     void addTexture(const sf::Texture& texture);
@@ -17,7 +17,7 @@ public:
     void draw(sf::RenderTarget& target) const;
 private:
     std::vector<const sf::Texture*> textures = {};
-    std::optional<sf::Sprite> sprite;
+    sf::Sprite sprite;
 };
 
 #endif //SFML_MARIO_TEST_TILE_H

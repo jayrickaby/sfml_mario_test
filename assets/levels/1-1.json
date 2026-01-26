@@ -1,0 +1,14 @@
+{
+  "globalSkinIndex": 1,
+  "playerData": {
+    "pos": [2,3]
+  },
+  "tileData": [
+    {
+      "tile": "ground",
+      "pos": [0,14],
+      "size": [16,2],
+      "skinOverride": -1
+    }
+  ]
+}
