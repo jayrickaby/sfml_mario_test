@@ -21,6 +21,7 @@ public:
 
     // Setters
     void setAnimation(const std::string& name);
+    void setPosition(const sf::Vector2f& pos) {position = pos;}
 
 private:
     // Appearance

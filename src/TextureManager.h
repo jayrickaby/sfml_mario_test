@@ -8,6 +8,7 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
+// @TODO implement atlassing
 struct TextureAtlas{
     sf::Texture atlasTexture;
     std::map<std::string, sf::IntRect> textures;

@@ -1,0 +1,35 @@
+Level data contains the "skin index" as each tile has a different usable skin
+Index -1 = Use global skin
+Index 0 = Overworld
+Index 1 = Underground
+Index 2 = Water
+Index 3 = Castle
+
+Based is on a grid of 16px.
+Every tile = 16px,
+Position at 0,0 = 0px, 0px on screen
+Position at 1,0 = 16px, 0px on screen
+
+Size allows reiteration of tile
+Size of 16,0 => 16 of this tile rightward
+
+{
+    "globalSkinIndex": 0,
+    "playerData": {
+        "pos": {2,3}
+    }
+    "tileData": [
+        {
+            "tile": "ground",
+            "pos": {0,0},
+            "size": {16,1},
+            "skinOverride": -1
+        }
+    ]
+}
+
+
+Level Manager:
+- Initialises all levels in directory
+- Needs to be called to load a level e.g. "1-1"
+-

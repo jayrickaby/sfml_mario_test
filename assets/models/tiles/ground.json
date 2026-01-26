@@ -1,5 +1,6 @@
 {
   "textures": [
-    "tiles/ground.png"
+    "tiles/ground.png",
+    "tiles/ground_ug.png"
   ]
 }

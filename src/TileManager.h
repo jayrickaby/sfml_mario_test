@@ -6,22 +6,9 @@
 #define SFML_MARIO_TEST_TILEMANAGER_H
 #include <map>
 #include <string>
-#include <vector>
 #include <SFML/Graphics.hpp>
 
-class Tile{
-public:
-    Tile() = default;
-    ~Tile() = default;
-
-    void addTexture(const sf::Texture& texture);
-    void setPosition(const sf::Vector2f& position);
-    void setTextureIndex(const int index);
-    void draw(sf::RenderTarget& target) const;
-private:
-    std::vector<const sf::Texture*> textures = {};
-    std::optional<sf::Sprite> sprite;
-};
+#include "Tile.h"
 
 class TileManager{
 public:

@@ -5,8 +5,8 @@
 #ifndef SFML_MARIO_TEST_CONSTANTS_H
 #define SFML_MARIO_TEST_CONSTANTS_H
 
-inline extern constexpr int SCREEN_HEIGHT = 128;
-inline extern constexpr int SCREEN_WIDTH = 128;
+inline extern constexpr int SCREEN_HEIGHT = 256;
+inline extern constexpr int SCREEN_WIDTH = 256;
 
 inline extern constexpr float EPSILON = 0.0001;
 

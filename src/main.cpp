@@ -15,7 +15,7 @@ using json = nlohmann::json;
 
 int main(){
     sf::RenderWindow window(sf::VideoMode({600,600}), "Super Mario Bros.");
-    sf::View view(sf::Vector2f {64,64}, sf::Vector2f{SCREEN_WIDTH,SCREEN_HEIGHT});
+    sf::View view(sf::Vector2f {SCREEN_WIDTH/2,SCREEN_HEIGHT/2}, sf::Vector2f{SCREEN_WIDTH,SCREEN_HEIGHT});
 
     AnimationManager::initialiseAnimations("assets/animations/");
     TextureManager::initialiseTextures("assets/textures/");
@@ -26,11 +26,13 @@ int main(){
     std::vector<Tile> tiles;
     for (int i = 0; i < 16; i++){
         Tile groundBlock = *TileManager::loadTile("ground");
+        groundBlock.setTextureIndex(1);
         groundBlock.setPosition({i * 16.f, SCREEN_HEIGHT - 16.f});
         tiles.push_back(groundBlock);
     }
 
     Player player;
+    player.setPosition({0,0});
     sf::Clock clock;
 
     while (window.isOpen()){
