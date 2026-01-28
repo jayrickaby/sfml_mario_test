@@ -1,5 +1,6 @@
 {
-  "globalSkinIndex": 1,
+  "background": 0,
+  "globalSkinIndex": 0,
   "playerData": {
     "pos": [2,3]
   },

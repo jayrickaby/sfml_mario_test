@@ -15,7 +15,7 @@
 Player::Player() :
 texture(&TextureManager::loadTexture("assets/textures/mariosheet.png")),
 sprite(*texture),
-animations(AnimationManager::loadAnimation("assets/animations/anim_player.json")),
+animations(*AnimationManager::loadAnimation("assets/animations/anim_player.json")),
 currentAnimation(nullptr),
 onGround(false),
 isJumping(false),
@@ -60,7 +60,7 @@ void Player::update(float deltaTime) {
         isSkidding = false;
     }
 
-    constexpr float GROUND_LEVEL = SCREEN_HEIGHT - 32.f;
+    constexpr float GROUND_LEVEL = SCREEN_HEIGHT - 48.f;
     velocity.y += gravity * deltaTime;
     position.y += velocity.y * deltaTime;
 

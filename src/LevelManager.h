@@ -11,12 +11,13 @@
 
 struct Level{
     std::vector<Tile> tiles;
+    sf::Color backgroundColour;
 };
 
 class LevelManager{
 public:
-    LevelManager();
-    ~LevelManager();
+    LevelManager() = default;
+    ~LevelManager() = default;
 
     static void initialiseLevels(const std::string& path);
     static void isLevel(const std::string& name);

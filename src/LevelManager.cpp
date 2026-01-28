@@ -41,6 +41,9 @@ Level LevelManager::loadLevel(const std::string& name){
     std::string path = levelDirectory + name + ".json";
     std::ifstream levelFileData(path);
     nlohmann::json file = nlohmann::json::parse(levelFileData);
+    if (file["background"] == 0){
+        level.backgroundColour = sf::Color{97,133,248};
+    }
     for (const auto& tileData : file["tileData"]){
         sf::Vector2f gridPosition({tileData["pos"][0], tileData["pos"][1]});
         sf::Vector2f repeatSize({tileData["size"][0], tileData["size"][1]});
@@ -62,5 +65,6 @@ Level LevelManager::loadLevel(const std::string& name){
             }
         }
     }
+    std::cout << "Loaded level: \"" << name << "\"" << std::endl;
     return level;
 }
