@@ -49,7 +49,7 @@ target_link_libraries(sfml_mario_test PRIVATE SFML::Graphics SFML::Audio nlohman
 set_target_properties(nlohmann_json PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
 
 # Copy Assets Folder
-add_custom_command(TARGET sfml_mario_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/bin/assets
-)
+#add_custom_command(TARGET sfml_mario_test POST_BUILD
+#        COMMAND ${CMAKE_COMMAND} -E copy_directory
+#        ${CMAKE_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/bin/assets
+#)
