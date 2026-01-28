@@ -38,7 +38,7 @@ int main(){
 
         float deltaTime = clock.restart().asSeconds();
 
-        window.clear();
+        window.clear(level.backgroundColour);
 
         window.setView(view);
         player.update(deltaTime);
