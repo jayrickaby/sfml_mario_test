@@ -1,0 +1,19 @@
+themes allow different artstyles of mario:
+
+assets/smb/animations/...
+assets/smb/levels/...
+assets/smb/textures/...
+
+assets/smb3/animations/...
+assets/smb3/levels/...
+etc
+
+each theme must have:
+assets/.../theme.json
+
+such like:
+theme.json
+{
+    "name": "Super Mario Bros.",
+    ...
+}

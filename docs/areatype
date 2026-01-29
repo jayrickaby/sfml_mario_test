@@ -1,0 +1,20 @@
+area type manager allows area types to be defined
+e.g.: overworld, underground, etc
+
+instead of numbers for skins and backgrounds, a json file allows easy identification
+
+e.g.:
+assets/areatypes/overworld.json
+{
+    "background:" #6084F8
+    "music": ".../.../file.mp3"
+}
+
+thus ->
+assets/models/brick.json
+{
+  "textures": [
+    {"overworld": "tiles/brick.png"},
+    {"underground": "tiles/brick_ug.png"}
+  ]
+}
