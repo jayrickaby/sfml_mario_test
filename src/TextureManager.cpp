@@ -15,6 +15,7 @@
 
 std::map<std::string,sf::Texture> TextureManager::textures = {};
 
+// @TODO Texture atlassing!
 void TextureManager::initialiseTextures(const std::string& path){
     if (!std::filesystem::is_directory(path)){
         throw std::runtime_error("Could not find directory: \"" + path + "\"");

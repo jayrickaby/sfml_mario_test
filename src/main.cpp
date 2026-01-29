@@ -34,6 +34,15 @@ int main(){
             if (event->is<sf::Event::Closed>()){
                 window.close();
             }
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Escape){
+                    window.close();
+                }
+                if ((keyPressed->scancode == sf::Keyboard::Scancode::A) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F3)){
+                    std::cout << "Reloading assets..." << std::endl;
+                    level = LevelManager::loadLevel("1-1");
+                }
+            }
         }
 
         float deltaTime = clock.restart().asSeconds();

@@ -16,6 +16,12 @@
       "pos": [5, 10],
       "size": [5,1],
       "skinOverride": -1
+    },
+    {
+      "tile": "brick",
+      "pos": [5, 3],
+      "size": [1,5],
+      "skinOverride": -1
     }
   ]
 }

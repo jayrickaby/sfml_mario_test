@@ -13,6 +13,7 @@
 #include "TextureManager.h"
 
 Player::Player() :
+//@TODO store in some .cfg file
 texture(&TextureManager::loadTexture("assets/textures/mariosheet.png")),
 sprite(*texture),
 animations(*AnimationManager::loadAnimation("assets/animations/anim_player.json")),
