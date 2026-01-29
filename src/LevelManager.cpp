@@ -41,7 +41,7 @@ Level LevelManager::loadLevel(const std::string& name){
     std::string path = levelDirectory + name + ".json";
     std::ifstream levelFileData(path);
     nlohmann::json file = nlohmann::json::parse(levelFileData);
-    if (file["background"] == 0){
+    if (file["backgroundOverride"] == -1){
         level.backgroundColour = sf::Color{97,133,248};
     }
     for (const auto& tileData : file["tileData"]){

@@ -1,5 +1,5 @@
 {
-  "background": 0,
+  "backgroundOverride": -1,
   "globalSkinIndex": 0,
   "playerData": {
     "pos": [2,3]
