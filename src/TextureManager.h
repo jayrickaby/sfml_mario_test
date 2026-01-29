@@ -19,7 +19,7 @@ public:
     TextureManager() = default;
     ~TextureManager() = default;
 
-    static void initialiseTextures(const std::string& path);
+    static void initialiseTextures();
     static bool isTexture(const std::string& path);
     static bool isInitialised();
     static sf::Texture& loadTexture(const std::string& path);

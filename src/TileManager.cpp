@@ -8,11 +8,14 @@
 #include <filesystem>
 #include <iostream>
 #include <nlohmann/json.hpp>
+
+#include "GameManager.h"
 #include "TextureManager.h"
 
 std::map<std::string, Tile> TileManager::tiles = {};
 
-void TileManager::initialiseTiles(const std::string& path){
+void TileManager::initialiseTiles(){
+    std::string path = GameManager::getAssetPath() + "models/";
     if (!std::filesystem::is_directory(path)){
         throw std::runtime_error("Could not find directory: \"" + path + "\"");
     }

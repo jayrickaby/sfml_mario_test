@@ -14,9 +14,6 @@
 
 Player::Player() :
 //@TODO store in some .cfg file
-texture(&TextureManager::loadTexture("assets/textures/mariosheet.png")),
-sprite(*texture),
-animations(*AnimationManager::loadAnimation("assets/animations/anim_player.json")),
 currentAnimation(nullptr),
 onGround(false),
 isJumping(false),
@@ -33,7 +30,17 @@ velocity({0,0}),
 position({0,0}),
 physicsBox(sf::FloatRect({16,16}, {0,0})) {}
 
+// Player tries to grab texturees before they even exist. This allows that to be seperately handled
+void Player::initialisePlayer(){
+    texture = std::make_shared<sf::Texture>(TextureManager::loadTexture("assets/textures/mariosheet.png"));
+    sprite = std::make_unique<sf::Sprite>(*texture);
+    animations = *AnimationManager::loadAnimation("assets/animations/anim_player.json");
+}
+
 void Player::update(float deltaTime) {
+    if (!sprite){
+        throw std::runtime_error("Player object unitialised!");
+    }
     handleInput();
     onGround = false;
 
@@ -94,13 +101,13 @@ void Player::update(float deltaTime) {
     if (currentAnimation != nullptr) {
         if (direction != 0){
             // Have to multiply int direction by a float or it'll whine about narrowing conversions
-            sprite.setScale({1.f * direction, 1.f});
+            sprite->setScale({1.f * direction, 1.f});
         }
-        if (sprite.getOrigin() != sprite.getLocalBounds().getCenter()){
-            sprite.setOrigin(sprite.getLocalBounds().getCenter());
+        if (sprite->getOrigin() != sprite->getLocalBounds().getCenter()){
+            sprite->setOrigin(sprite->getLocalBounds().getCenter());
         }
-        sprite.setPosition(physicsBox.position + sprite.getOrigin());
-        sprite.setTextureRect(currentAnimation->getFrameRect());
+        sprite->setPosition(physicsBox.position + sprite->getOrigin());
+        sprite->setTextureRect(currentAnimation->getFrameRect());
         currentAnimation->setFrameDurationScale(14.f * animationScale / 60.f);
         currentAnimation->update(deltaTime);
     }
@@ -121,7 +128,7 @@ void Player::handleInput() {
 }
 
 void Player::draw(sf::RenderTarget& target) {
-    target.draw(sprite);
+    target.draw(*sprite);
 }
 
 void Player::setAnimation(const std::string& name) {

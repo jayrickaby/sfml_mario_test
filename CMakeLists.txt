@@ -20,6 +20,8 @@ add_executable(sfml_mario_test src/main.cpp
         src/Tile.h
         src/LevelManager.cpp
         src/LevelManager.h
+        src/GameManager.cpp
+        src/GameManager.h
 )
 
 find_package(SFML 3.0 COMPONENTS Graphics Audio REQUIRED)

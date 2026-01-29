@@ -10,18 +10,20 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+#include "GameManager.h"
+
 std::vector<std::string> LevelManager::levels = {};
 std::string LevelManager::levelDirectory;
 
-void LevelManager::initialiseLevels(const std::string& path){
-    levelDirectory = path;
-    if (!std::filesystem::is_directory(path)){
-        throw std::runtime_error("Could not find directory: \"" + path + "\"");
+void LevelManager::initialiseLevels(){
+    levelDirectory = GameManager::getAssetPath() + "levels/";
+    if (!std::filesystem::is_directory(levelDirectory)){
+        throw std::runtime_error("Could not find directory: \"" + levelDirectory + "\"");
     }
     if (!TileManager::isInitialised()){
         throw std::runtime_error("Cannot initialise levels before initialising tiles!");
     }
-    const std::filesystem::path directory{path};
+    const std::filesystem::path directory{levelDirectory};
 
     for (auto const& dirEntry : std::filesystem::directory_iterator{directory}){
         auto levelPath = dirEntry.path().string();
@@ -44,6 +46,18 @@ Level LevelManager::loadLevel(const std::string& name){
     if (file["backgroundOverride"] == -1){
         level.backgroundColour = sf::Color{97,133,248};
     }
+    const auto& playerData = file["playerData"];
+    if (playerData.empty()){
+        throw std::runtime_error("Player data in level not defined!");
+    }
+    std::cout << playerData << std::endl;
+    if (playerData["pos"].empty()){
+        throw std::runtime_error("Player position in level not defined!");
+    }
+    sf::Vector2f playerStartPosition = {playerData["pos"][0], playerData["pos"][1]};;
+    level.playerStartPosition = {playerStartPosition.x * 16.f, playerStartPosition.y * 16.f};
+
+
     for (const auto& tileData : file["tileData"]){
         sf::Vector2f gridPosition({tileData["pos"][0], tileData["pos"][1]});
         sf::Vector2f repeatSize({tileData["size"][0], tileData["size"][1]});

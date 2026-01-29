@@ -15,7 +15,7 @@ public:
     TileManager() = default;
     ~TileManager() = default;
 
-    static void initialiseTiles(const std::string& path);
+    static void initialiseTiles();
     static bool isTile(const std::string& name);
     static bool isInitialised();
     static Tile* loadTile(const std::string& name);

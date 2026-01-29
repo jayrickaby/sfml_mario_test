@@ -15,7 +15,7 @@ public:
     AnimationManager() = default;
     ~AnimationManager() = default;
 
-    static void initialiseAnimations(const std::string& path);
+    static void initialiseAnimations();
     static std::map<std::string, Animation>* loadAnimation(const std::string& name);
 
 private:

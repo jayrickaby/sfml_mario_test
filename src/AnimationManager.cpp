@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "Animation.h"
+#include "GameManager.h"
 #include "TextureManager.h"
 
 std::map<std::string, std::map<std::string, Animation>> AnimationManager::animations = {};
@@ -15,7 +16,8 @@ Frame parseFrame(const nlohmann::basic_json<>& frameData);
 std::map<std::string, Animation> parseAnimations(const std::string& path);
 Animation parseAnimation(const nlohmann::basic_json<>& animationData);
 
-void AnimationManager::initialiseAnimations(const std::string& path){
+void AnimationManager::initialiseAnimations(){
+    std::string path = GameManager::getAssetPath() + "animations/";
     if (!std::filesystem::is_directory(path)){
         throw std::runtime_error("Could not find directory: \"" + path + "\"");
     }

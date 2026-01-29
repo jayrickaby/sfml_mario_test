@@ -11,6 +11,7 @@
 
 struct Level{
     std::vector<Tile> tiles;
+    sf::Vector2f playerStartPosition;
     sf::Color backgroundColour;
 };
 
@@ -19,7 +20,7 @@ public:
     LevelManager() = default;
     ~LevelManager() = default;
 
-    static void initialiseLevels(const std::string& path);
+    static void initialiseLevels();
     static void isLevel(const std::string& name);
     static bool isInitialised();
     static Level loadLevel(const std::string& name);

@@ -15,6 +15,7 @@ public:
     void update(float deltaTime);
     void handleInput();
     void draw(sf::RenderTarget& target);
+    void initialisePlayer();
 
     // Getters
     sf::Vector2f getPosition() const { return position; };
@@ -25,8 +26,8 @@ public:
 
 private:
     // Appearance
-    sf::Texture* texture;
-    sf::Sprite sprite;
+    std::shared_ptr<sf::Texture> texture;
+    std::unique_ptr<sf::Sprite> sprite;
     std::map<std::string, Animation> animations;
     Animation* currentAnimation;
     std::string currentAnimationName;
