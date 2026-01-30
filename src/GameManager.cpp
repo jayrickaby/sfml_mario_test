@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "AnimationManager.h"
+#include "InputManager.h"
 #include "TextureManager.h"
 #include "TileManager.h"
 
@@ -46,14 +47,21 @@ void GameManager::updateGame(sf::RenderWindow& window){
             window.close();
         }
         else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
-            if (keyPressed->scancode == sf::Keyboard::Scancode::Escape){
-                window.close();
-            }
-            if ((keyPressed->scancode == sf::Keyboard::Scancode::A) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F3)){
-                std::cout << "Reloading assets..." << std::endl;
-                initialiseGame();
+            InputManager::setLastKeyPressed(keyPressed->code);
+        }
+        else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()){
+            if (InputManager::isLastKeyPressed(keyReleased->code)){
+                InputManager::setLastKeyPressed(sf::Keyboard::Key::Unknown);
             }
         }
+    }
+
+    if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Escape)){
+        window.close();
+    }
+    else if (InputManager::isKeyPressed(sf::Keyboard::Key::F3) && InputManager::isLastKeyPressed(sf::Keyboard::Key::A)){
+        std::cout << "Reloading assets..." << std::endl;
+        initialiseGame();
     }
 
     float deltaTime = clock.restart().asSeconds();

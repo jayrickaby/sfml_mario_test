@@ -10,6 +10,7 @@
 
 #include "AnimationManager.h"
 #include "constants.h"
+#include "InputManager.h"
 #include "TextureManager.h"
 
 Player::Player() :
@@ -115,12 +116,25 @@ void Player::update(float deltaTime) {
 }
 
 void Player::handleInput() {
-    // @TODO Better keyboard system so that it gets the last key pressed instead
-    // @ e.g. (sf::KeyBoard::isKeyPressed(sf::Keyboard::Key::D) && lastKeyPressed == sf::Keyboard::Key::D)
-    // @ Something like this so that there's no null-cancelling movement. Just left, right and stop.
-    direction = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
+    if (InputManager::isLastKeyPressed(sf::Keyboard::Key::A)){
+        direction = -1;
+    }
+    else if (InputManager::isLastKeyPressed(sf::Keyboard::Key::D)){
+        direction = 1;
+    }
+    else if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Unknown)){
+        if (!(InputManager::isKeyPressed(sf::Keyboard::Key::A) || InputManager::isKeyPressed(sf::Keyboard::Key::D))){
+            direction = 0;
+        }
+    }
+    if (InputManager::isKeyPressed(sf::Keyboard::Key::A) && !InputManager::isKeyPressed(sf::Keyboard::Key::D) && direction == 1){
+        direction = -1;
+    }
+    else if (InputManager::isKeyPressed(sf::Keyboard::Key::D) && !InputManager::isKeyPressed(sf::Keyboard::Key::A) && direction == -1){
+        direction = 1;
+    }
 
-    if (isKeyPressed(sf::Keyboard::Key::Space) && onGround && !isJumping){
+    if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Space) && onGround && !isJumping){
         onGround = false;
         isJumping = true;
         velocity.y -= jumpStrength;
