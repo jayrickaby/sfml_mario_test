@@ -6,6 +6,7 @@
 #define SFML_MARIO_TEST_LEVELMANAGER_H
 #include <string>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 #include "Tile.h"
 
@@ -21,9 +22,10 @@ public:
     ~LevelManager() = default;
 
     static void initialiseLevels();
-    static void isLevel(const std::string& name);
+    static bool isLevel(const std::string& name);
     static bool isInitialised();
     static Level loadLevel(const std::string& name);
+
 
 private:
     static std::vector<std::string> levels;

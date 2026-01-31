@@ -39,6 +39,9 @@ void LevelManager::initialiseLevels(){
 }
 
 Level LevelManager::loadLevel(const std::string& name){
+    if (!isLevel(name)){
+        throw std::runtime_error("Could not find level: \"" + name + "\"");
+    }
     Level level;
     std::string path = levelDirectory + name + ".json";
     std::ifstream levelFileData(path);
@@ -81,4 +84,21 @@ Level LevelManager::loadLevel(const std::string& name){
     }
     std::cout << "Loaded level: \"" << name << "\"" << std::endl;
     return level;
+}
+
+bool LevelManager::isInitialised(){
+    if (levels.empty()){
+        return false;
+    }
+    return true;
+}
+
+bool LevelManager::isLevel(const std::string& name){
+    if (!isInitialised()){
+        throw std::runtime_error("No levels initialised!");
+    }
+    if (std::ranges::count(levels, name) == 0){
+        return false;
+    }
+    return true;
 }
