@@ -25,7 +25,7 @@ walkAcceleration(128.f),
 runSpeed(160.f),
 runAcceleration(196.f),
 dampening(8.5f),
-gravity(475.f),
+gravity(450.f),
 jumpStrength(250.f),
 velocity({0,0}),
 position({0,0}),
@@ -79,6 +79,11 @@ void Player::update(float deltaTime) {
         onGround = true;
         isJumping = false;
     }
+    if (isJumping && velocity.y <= -jumpStrength/2){
+        if (!InputManager::isKeyPressed(sf::Keyboard::Key::Space)){
+            velocity.y += gravity * jumpStrength * deltaTime;
+        }
+    }
 
     if (isJumping){
         setAnimation("jump");
@@ -122,10 +127,8 @@ void Player::handleInput() {
     else if (InputManager::isLastKeyPressed(sf::Keyboard::Key::D)){
         direction = 1;
     }
-    else if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Unknown)){
-        if (!(InputManager::isKeyPressed(sf::Keyboard::Key::A) || InputManager::isKeyPressed(sf::Keyboard::Key::D))){
-            direction = 0;
-        }
+    else if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Unknown) && !(InputManager::isKeyPressed(sf::Keyboard::Key::A) || InputManager::isKeyPressed(sf::Keyboard::Key::D))){
+        direction = 0;
     }
     if (InputManager::isKeyPressed(sf::Keyboard::Key::A) && !InputManager::isKeyPressed(sf::Keyboard::Key::D) && direction == 1){
         direction = -1;
