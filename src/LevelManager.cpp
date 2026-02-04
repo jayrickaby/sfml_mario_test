@@ -65,6 +65,7 @@ Level LevelManager::loadLevel(const std::string& name){
         sf::Vector2f gridPosition({tileData["pos"][0], tileData["pos"][1]});
         sf::Vector2f repeatSize({tileData["size"][0], tileData["size"][1]});
 
+        //@TODO: Creates a collision box the size of the block repeat area
         for (int i = 0; i < repeatSize.x; i++){
             for (int j = 0; j < repeatSize.y; j++){
                 sf::Vector2f blockOffset = sf::Vector2f(1*i, 1*j);

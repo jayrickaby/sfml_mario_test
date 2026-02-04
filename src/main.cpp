@@ -5,6 +5,7 @@
 
 #include "constants.h"
 #include "GameManager.h"
+#include "InputManager.h"
 
 using json = nlohmann::json;
 

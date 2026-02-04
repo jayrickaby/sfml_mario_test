@@ -66,6 +66,12 @@ void GameManager::updateGame(sf::RenderWindow& window){
 
     float deltaTime = clock.restart().asSeconds();
     player.update(deltaTime);
+
+    for (auto& tile : level.tiles){
+        if (tile.getBoundingBox().findIntersection(player.getBoundingBox())){
+            player.collide(tile);
+        }
+    }
 }
 
 void GameManager::drawGame(sf::RenderTarget& target){

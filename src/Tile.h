@@ -11,10 +11,15 @@ public:
     Tile();
     ~Tile() = default;
 
+    void draw(sf::RenderTarget& target) const;
+
+    // Getters
+    sf::FloatRect getBoundingBox() const;
+
+    // Setters
     void addTexture(const sf::Texture& texture);
     void setPosition(const sf::Vector2f& position);
     void setTextureIndex(int index);
-    void draw(sf::RenderTarget& target) const;
 private:
     std::vector<const sf::Texture*> textures = {};
     sf::Sprite sprite;

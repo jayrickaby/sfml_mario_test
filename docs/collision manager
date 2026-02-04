@@ -1,0 +1,12 @@
+each tile gets an int rect
+if there an adjacent intrect that has same x / y, merge into a bigger one
+
+e.g.
+"G" = Ground Tile
+" " = Air
+
+GGGG GG GGG
+GGGG GG GGG
+1    2  3
+
+Grouped into these 3 for int rects

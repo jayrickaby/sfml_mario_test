@@ -14,6 +14,10 @@ void Tile::draw(sf::RenderTarget& target) const{
     target.draw(sprite);
 }
 
+sf::FloatRect Tile::getBoundingBox() const{
+    return sprite.getGlobalBounds();
+}
+
 void Tile::addTexture(const sf::Texture& texture){
     textures.emplace_back(&texture);
 }

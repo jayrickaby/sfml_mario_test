@@ -10,11 +10,13 @@
 
 #include "AnimationManager.h"
 #include "constants.h"
+#include "GameManager.h"
 #include "InputManager.h"
 #include "TextureManager.h"
+#include "Tile.h"
 
 Player::Player() :
-//@TODO store in some .cfg file
+//@TODO store configurables in some .cfg file
 currentAnimation(nullptr),
 onGround(false),
 isJumping(false),
@@ -29,9 +31,9 @@ gravity(450.f),
 jumpStrength(250.f),
 velocity({0,0}),
 position({0,0}),
-physicsBox(sf::FloatRect({16,16}, {0,0})) {}
+physicsBox(sf::FloatRect({16,16}, {16,16})) {}
 
-// Player tries to grab texturees before they even exist. This allows that to be seperately handled
+// Player tries to grab textures before they even exist. This allows that to be seperately handled
 void Player::initialisePlayer(){
     texture = std::make_shared<sf::Texture>(TextureManager::loadTexture("assets/textures/mariosheet.png"));
     sprite = std::make_unique<sf::Sprite>(*texture);
@@ -69,21 +71,8 @@ void Player::update(float deltaTime) {
         isSkidding = false;
     }
 
-    constexpr float GROUND_LEVEL = SCREEN_HEIGHT - 48.f;
     velocity.y += gravity * deltaTime;
     position.y += velocity.y * deltaTime;
-
-    if (position.y >= GROUND_LEVEL){
-        position.y = GROUND_LEVEL;
-        velocity.y = 0;
-        onGround = true;
-        isJumping = false;
-    }
-    if (isJumping && velocity.y <= -jumpStrength/2){
-        if (!InputManager::isKeyPressed(sf::Keyboard::Key::Space)){
-            velocity.y += gravity * jumpStrength * deltaTime;
-        }
-    }
 
     if (isJumping){
         setAnimation("jump");
@@ -118,6 +107,30 @@ void Player::update(float deltaTime) {
         currentAnimation->update(deltaTime);
     }
     physicsBox.position = position;
+}
+
+void Player::collide(Tile& tile){
+    sf::FloatRect overlap = tile.getBoundingBox().findIntersection(physicsBox).value();
+    if (overlap.size.y > overlap.size.x){
+        if (velocity.x > 0){
+            position.x -= overlap.size.x;
+        }
+        else if (velocity.x < 0){
+            position.x += overlap.size.x;
+        }
+        velocity.x = 0;
+    }
+    else if (overlap.size.x > overlap.size.y){
+        if (velocity.y > 0){
+            position.y -= overlap.size.y;
+            onGround = true;
+            isJumping = false;
+        }
+        else if (velocity.y < 0){
+            position.y += overlap.size.y;
+        }
+        velocity.y = 0;
+    }
 }
 
 void Player::handleInput() {

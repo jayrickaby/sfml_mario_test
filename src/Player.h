@@ -9,15 +9,19 @@
 
 #include "Animation.h"
 
+class Tile;
+
 class Player{
 public:
     Player();
     void update(float deltaTime);
+    void collide(Tile& tile);
     void handleInput();
     void draw(sf::RenderTarget& target);
     void initialisePlayer();
 
     // Getters
+    sf::FloatRect getBoundingBox() const { return physicsBox;};
     sf::Vector2f getPosition() const { return position; };
 
     // Setters
