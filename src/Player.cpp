@@ -109,8 +109,12 @@ void Player::update(float deltaTime) {
     physicsBox.position = position;
 }
 
-void Player::collide(Tile& tile){
-    sf::FloatRect overlap = tile.getBoundingBox().findIntersection(physicsBox).value();
+void Player::collide(const sf::FloatRect& collisionBox){
+    auto intersection = collisionBox.findIntersection(physicsBox);
+    if (!intersection.has_value()){
+        return;
+    }
+    sf::FloatRect overlap = intersection.value();
     if (overlap.size.y > overlap.size.x){
         if (velocity.x > 0){
             position.x -= overlap.size.x;

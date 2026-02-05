@@ -12,6 +12,7 @@
 
 struct Level{
     std::vector<Tile> tiles;
+    std::vector<sf::FloatRect> levelCollisions;
     sf::Vector2f playerStartPosition;
     sf::Color backgroundColour;
 };

@@ -15,7 +15,7 @@ class Player{
 public:
     Player();
     void update(float deltaTime);
-    void collide(Tile& tile);
+    void collide(const sf::FloatRect& collisionBox);
     void handleInput();
     void draw(sf::RenderTarget& target);
     void initialisePlayer();

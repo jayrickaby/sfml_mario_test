@@ -82,6 +82,7 @@ Level LevelManager::loadLevel(const std::string& name){
                 level.tiles.emplace_back(tile);
             }
         }
+        level.levelCollisions.emplace_back(sf::FloatRect({gridPosition.x * 16, gridPosition.y * 16},{repeatSize.x * 16, repeatSize.y * 16}));
     }
     std::cout << "Loaded level: \"" << name << "\"" << std::endl;
     return level;
