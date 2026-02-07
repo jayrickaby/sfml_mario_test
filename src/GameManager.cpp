@@ -19,6 +19,7 @@ std::string GameManager::assetPath;
 void initialiseGame(const std::string& assetPath);
 void updateGame(sf::RenderWindow& window);
 void drawGame(sf::RenderTarget& target);
+CollisionSide getCollisionSide(const sf::FloatRect& a, const sf::FloatRect& b);
 
 void GameManager::initialiseGame(const std::string& path){
     assetPath = path;
@@ -41,7 +42,7 @@ void GameManager::initialiseGame(){
     initialiseGame(assetPath);
 }
 
-void GameManager::updateGame(sf::RenderWindow& window){
+void GameManager::checkForEvents(sf::RenderWindow& window){
     while (const std::optional event = window.pollEvent()) {
         if (event->is<sf::Event::Closed>()){
             window.close();
@@ -55,6 +56,10 @@ void GameManager::updateGame(sf::RenderWindow& window){
             }
         }
     }
+}
+
+void GameManager::updateGame(sf::RenderWindow& window){
+    checkForEvents(window);
 
     if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Escape)){
         window.close();
@@ -68,9 +73,9 @@ void GameManager::updateGame(sf::RenderWindow& window){
     player.update(deltaTime);
 
     for (auto& collisionBox : level.levelCollisions){
-        std::cout << collisionBox.position.y << std::endl;
         if (collisionBox.findIntersection(player.getBoundingBox())){
-            player.collide(collisionBox);
+            CollisionSide side = getCollisionSide(player.getBoundingBox(), collisionBox);
+            player.collide(side, collisionBox.findIntersection(player.getBoundingBox()).value());
         }
     }
 }
@@ -82,4 +87,30 @@ void GameManager::drawGame(sf::RenderTarget& target){
     for (const auto& tile : level.tiles){
         tile.draw(target);
     }
+}
+
+CollisionSide GameManager::getCollisionSide(const sf::FloatRect& a, const sf::FloatRect& b){
+    auto intersection = a.findIntersection(b);
+    if (!intersection.has_value()){
+        return None;
+    }
+    sf::FloatRect overlap = intersection.value();
+
+    if (overlap.size.y > overlap.size.x){
+        if (overlap.position.x + overlap.size.x < b.getCenter().x){
+            return Left;
+        }
+        else if (overlap.position.x + overlap.size.x > b.getCenter().x){
+            return Right;
+        }
+    }
+    else if (overlap.size.x > overlap.size.y){
+        if (overlap.position.y + overlap.size.y < b.getCenter().y){
+            return Top;
+        }
+        else if (overlap.position.y + overlap.size.y > b.getCenter().y){
+            return Bottom;
+        }
+    }
+    return None;
 }

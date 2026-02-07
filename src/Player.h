@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Animation.h"
+#include "CollisionSide.h"
 
 class Tile;
 
@@ -15,14 +16,17 @@ class Player{
 public:
     Player();
     void update(float deltaTime);
-    void collide(const sf::FloatRect& collisionBox);
+    void move(float deltaTime);
+    void moveX(float deltaTime);
+    void moveY(float deltaTime);
+    void collide(CollisionSide side, sf::FloatRect overlap);
     void handleInput();
     void draw(sf::RenderTarget& target);
     void initialisePlayer();
 
     // Getters
-    sf::FloatRect getBoundingBox() const { return physicsBox;};
-    sf::Vector2f getPosition() const { return position; };
+    sf::FloatRect getBoundingBox() const;
+    sf::Vector2f getPosition() const;
 
     // Setters
     void setAnimation(const std::string& name);

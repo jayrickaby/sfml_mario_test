@@ -7,8 +7,10 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+#include "CollisionSide.h"
 #include "LevelManager.h"
 #include "Player.h"
+
 
 
 class GameManager{
@@ -18,8 +20,12 @@ public:
 
     static void initialiseGame(const std::string& path);
     static void initialiseGame();
+    static void checkForEvents(sf::RenderWindow& window);
     static void updateGame(sf::RenderWindow& window);
     static void drawGame(sf::RenderTarget& target);
+
+    static CollisionSide getCollisionSide(const sf::FloatRect& a, const sf::FloatRect& b);
+
 
     // Getter
     static std::string getAssetPath() { return assetPath; }

@@ -40,13 +40,20 @@ void Player::initialisePlayer(){
     animations = *AnimationManager::loadAnimation("assets/animations/anim_player.json");
 }
 
-void Player::update(float deltaTime) {
-    if (!sprite){
-        throw std::runtime_error("Player object unitialised!");
-    }
-    handleInput();
-    onGround = false;
+sf::FloatRect Player::getBoundingBox() const{
+    return physicsBox;
+}
 
+sf::Vector2f Player::getPosition() const{
+    return position;
+}
+
+void Player::move(float deltaTime){
+    moveX(deltaTime);
+    moveY(deltaTime);
+}
+
+void Player::moveX(float deltaTime){
     velocity.x += walkAcceleration * deltaTime * direction;
 
     if (direction == 0){
@@ -70,9 +77,20 @@ void Player::update(float deltaTime) {
     else{
         isSkidding = false;
     }
+}
 
+void Player::moveY(float deltaTime){
     velocity.y += gravity * deltaTime;
     position.y += velocity.y * deltaTime;
+}
+
+void Player::update(float deltaTime) {
+    if (!sprite){
+        throw std::runtime_error("Player object unitialised!");
+    }
+    handleInput();
+    onGround = false;
+    move(deltaTime);
 
     if (isJumping){
         setAnimation("jump");
@@ -109,31 +127,24 @@ void Player::update(float deltaTime) {
     physicsBox.position = position;
 }
 
-void Player::collide(const sf::FloatRect& collisionBox){
-    auto intersection = collisionBox.findIntersection(physicsBox);
-    if (!intersection.has_value()){
-        return;
-    }
-    sf::FloatRect overlap = intersection.value();
-    if (overlap.size.y > overlap.size.x){
-        if (velocity.x > 0){
-            position.x -= overlap.size.x;
-        }
-        else if (velocity.x < 0){
-            position.x += overlap.size.x;
-        }
+void Player::collide(const CollisionSide side, const sf::FloatRect overlap){
+    if (side == Left){
         velocity.x = 0;
+        position.x -= overlap.size.x;
     }
-    else if (overlap.size.x > overlap.size.y){
-        if (velocity.y > 0){
-            position.y -= overlap.size.y;
-            onGround = true;
-            isJumping = false;
-        }
-        else if (velocity.y < 0){
-            position.y += overlap.size.y;
-        }
+    if (side == Right){
+        velocity.x = 0;
+        position.x += overlap.size.x;
+    }
+    else if (side == Top){
         velocity.y = 0;
+        position.y -= overlap.size.y;
+        isJumping = false;
+        onGround = true;
+    }
+    else if (side == Bottom){
+        velocity.y = 0;
+        position.y += overlap.size.y;
     }
 }
 

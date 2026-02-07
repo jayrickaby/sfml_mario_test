@@ -24,5 +24,4 @@ private:
     std::vector<const sf::Texture*> textures = {};
     sf::Sprite sprite;
 };
-
 #endif //SFML_MARIO_TEST_TILE_H
