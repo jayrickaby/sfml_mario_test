@@ -14,7 +14,31 @@
     {
       "tile": "brick",
       "pos": [5,10],
-      "size": [5,3],
+      "size": [1,1],
+      "skinOverride": -1
+    },
+    {
+      "tile": "questionblock",
+      "pos": [6,10],
+      "size": [1,1],
+      "skinOverride": -1
+    },
+    {
+      "tile": "brick",
+      "pos": [7,10],
+      "size": [1,1],
+      "skinOverride": -1
+    },
+    {
+      "tile": "questionblock",
+      "pos": [8,10],
+      "size": [1,1],
+      "skinOverride": -1
+    },
+    {
+      "tile": "brick",
+      "pos": [9,10],
+      "size": [1,1],
       "skinOverride": -1
     }
   ]
