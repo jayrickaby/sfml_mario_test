@@ -113,7 +113,7 @@ void Player::update(float deltaTime) {
 
     if (currentAnimation != nullptr) {
         if (direction != 0){
-            // Have to multiply int direction by a float or it'll whine about narrowing conversions
+            // Have to multiply int direction by a float or it'll whine about narrowing conversions (it's literally a 1 and a -1 i don't understand why its being so stupid??)
             sprite->setScale({1.f * direction, 1.f});
         }
         if (sprite->getOrigin() != sprite->getLocalBounds().getCenter()){
@@ -128,15 +128,23 @@ void Player::update(float deltaTime) {
 }
 
 void Player::collide(const CollisionSide side, const sf::FloatRect overlap){
+    collideX(side, overlap);
+    collideY(side, overlap);
+}
+
+void Player::collideX(const CollisionSide side, const sf::FloatRect overlap){
     if (side == Left){
         velocity.x = 0;
         position.x -= overlap.size.x;
     }
-    if (side == Right){
+    else if (side == Right){
         velocity.x = 0;
         position.x += overlap.size.x;
     }
-    else if (side == Top){
+}
+
+void Player::collideY(const CollisionSide side, const sf::FloatRect overlap){
+    if (side == Top){
         velocity.y = 0;
         position.y -= overlap.size.y;
         isJumping = false;
@@ -149,20 +157,23 @@ void Player::collide(const CollisionSide side, const sf::FloatRect overlap){
 }
 
 void Player::handleInput() {
+    bool left = InputManager::isKeyPressed(sf::Keyboard::Key::A);
+    bool right = InputManager::isKeyPressed(sf::Keyboard::Key::D);
+
     if (InputManager::isLastKeyPressed(sf::Keyboard::Key::A)){
         direction = -1;
     }
     else if (InputManager::isLastKeyPressed(sf::Keyboard::Key::D)){
         direction = 1;
     }
-    else if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Unknown) && !(InputManager::isKeyPressed(sf::Keyboard::Key::A) || InputManager::isKeyPressed(sf::Keyboard::Key::D))){
-        direction = 0;
-    }
-    if (InputManager::isKeyPressed(sf::Keyboard::Key::A) && !InputManager::isKeyPressed(sf::Keyboard::Key::D) && direction == 1){
+    else if (left && !right){
         direction = -1;
     }
-    else if (InputManager::isKeyPressed(sf::Keyboard::Key::D) && !InputManager::isKeyPressed(sf::Keyboard::Key::A) && direction == -1){
+    else if (right && !left){
         direction = 1;
+    }
+    else if (!left && !right){
+        direction = 0;
     }
 
     if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Space) && onGround && !isJumping){

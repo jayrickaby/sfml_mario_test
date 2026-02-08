@@ -20,6 +20,8 @@ public:
     void moveX(float deltaTime);
     void moveY(float deltaTime);
     void collide(CollisionSide side, sf::FloatRect overlap);
+    void collideX(CollisionSide side, sf::FloatRect overlap);
+    void collideY(CollisionSide side, sf::FloatRect overlap);
     void handleInput();
     void draw(sf::RenderTarget& target);
     void initialisePlayer();
