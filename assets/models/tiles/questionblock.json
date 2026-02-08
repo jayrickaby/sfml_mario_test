@@ -1,5 +1,5 @@
 {
-  "animation": "tiles/anim_questionblock",
+  "animation": "anim_questionblock.json",
   "textures": [
     "tiles/questionblock.png"
   ]

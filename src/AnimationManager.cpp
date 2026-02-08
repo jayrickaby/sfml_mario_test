@@ -20,13 +20,13 @@ void AnimationManager::initialiseAnimations(){
     std::vector files(ManagerUtilities::findFiles(fullPath, {".json"}));
 
     for (std::string& file : files){
-        std::map animationsList{parseAnimations(fullPath + file)};
+        std::map animationsList{parseAnimations(file)};
         animations.emplace(file, animationsList);
         std::cout << "Initialised animation: \"" << file << "\"" << std::endl;
     }
 }
 
-std::map<std::string, Animation>* AnimationManager::loadAnimation(const std::string& name){
+std::map<std::string, Animation>* AnimationManager::loadAnimationFile(const std::string& name){
     if (animations.empty()){
         throw std::runtime_error("No animations initialised!");
     }
@@ -60,7 +60,7 @@ Frame AnimationManager::parseFrame(const nlohmann::basic_json<>& frameData){
 }
 
 std::map<std::string, Animation> AnimationManager::parseAnimations(const std::string& path){
-    std::ifstream animationFileData(path);
+    std::ifstream animationFileData(fullPath + path);
     nlohmann::json file = nlohmann::json::parse(animationFileData);
     std::map<std::string, Animation> animationsList;
     for (const auto& animationData : file["animations"]){

@@ -43,8 +43,6 @@ sf::Texture& TextureManager::loadTexture(const std::string& name){
 }
 
 bool TextureManager::isInitialised(){
-    if (textures.empty()){
-        return false;
-    }
-    return true;
+    return ManagerUtilities::isInitialised(textures);
+    //return !textures.empty();
 }

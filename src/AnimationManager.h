@@ -16,7 +16,7 @@ public:
     ~AnimationManager() = default;
 
     static void initialiseAnimations();
-    static std::map<std::string, Animation>* loadAnimation(const std::string& name);
+    static std::map<std::string, Animation>* loadAnimationFile(const std::string& name);
 
 private:
     // e.g.             Player                 Idle     [data]

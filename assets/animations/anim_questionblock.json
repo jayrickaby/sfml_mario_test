@@ -1,7 +1,7 @@
 {
   "animations": [
     {
-      "name":"idle",
+      "name":"idleTile",
       "frames":[
         {
           "pos":[0, 0],

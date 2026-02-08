@@ -5,15 +5,15 @@
 #include "AnimationSubManager.h"
 
 void AnimationSubManager::playAnimation(const std::string& name){
-    if (getCurrentAnimationName() == name){
+    if (currentAnimationName == name){
         return;
-    }
-    if (currentAnimation != nullptr) {
-        currentAnimation->reset();
     }
 
     if (animations.contains(name)) {
-        currentAnimation = &animations.at(name);
+        if (!currentAnimationName.empty()){
+            animations.at(currentAnimationName).reset();
+        }
+        currentAnimationName = name;
     }
     else {
         throw std::runtime_error("Animation \"" + name + "\" doesn't exist!");
@@ -24,13 +24,13 @@ void AnimationSubManager::loadAnimations(const std::map<std::string, Animation> 
     animations = *givenAnimations;
 }
 
-Animation* AnimationSubManager::getCurrentAnimation() const{
-    return currentAnimation;
+Animation* AnimationSubManager::getCurrentAnimation() {
+    if (currentAnimationName.empty()){
+        return nullptr;
+    }
+    return &animations.at(currentAnimationName);
 }
 
 std::string AnimationSubManager::getCurrentAnimationName() const{
-    if (currentAnimation != nullptr){
-        return currentAnimation->getName();
-    }
-    return "";
+    return currentAnimationName;
 }

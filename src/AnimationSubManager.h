@@ -21,11 +21,11 @@ public:
     void playAnimation(const std::string& name);
 
     // Getters
-    Animation* getCurrentAnimation() const;
+    Animation* getCurrentAnimation();
     std::string getCurrentAnimationName() const;
 private:
     std::map<std::string, Animation> animations;
-    Animation* currentAnimation;
+    std::string currentAnimationName;
 };
 
 

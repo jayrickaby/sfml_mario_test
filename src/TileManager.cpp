@@ -8,6 +8,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+#include "AnimationManager.h"
 #include "GameManager.h"
 #include "ManagerUtilities.h"
 #include "TextureManager.h"
@@ -32,6 +33,14 @@ Tile TileManager::initialiseTile(std::string& path){
     Tile tile;
     std::ifstream modelFileData(fullPath + path);
     nlohmann::json modelFile = nlohmann::json::parse(modelFileData);
+
+    if (!modelFile["animation"].empty()){
+        tile.setAnimated();
+        auto* anims = AnimationManager::loadAnimationFile(modelFile["animation"]);
+        tile.addAnimations(anims);
+        tile.playAnimation("idleTile");
+        tile.setFrameDurationScale(0.15f);
+    }
     if (modelFile["textures"].empty()){
         throw std::runtime_error("Model \"" + path + "\" has no textures!");
     }

@@ -17,6 +17,12 @@ public:
     const std::string& directory,
     const std::vector<std::string>& extension
     );
+
+    template <typename Container>
+    static bool isInitialised(const Container& container){
+        return !container.empty();
+    }
+
 private:
 
 };

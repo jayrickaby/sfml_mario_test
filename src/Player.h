@@ -17,6 +17,7 @@ class Player{
 public:
     Player();
     void update(float deltaTime);
+    void updateAnimation(float deltaTime);
     void move(float deltaTime);
     void moveX(float deltaTime);
     void moveY(float deltaTime);

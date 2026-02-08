@@ -18,3 +18,5 @@ assets/models/brick.json
     {"underground": "tiles/brick_ug.png"}
   ]
 }
+
+level file will also allow overriding of music

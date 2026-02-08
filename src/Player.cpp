@@ -37,7 +37,8 @@ physicsBox(sf::FloatRect({16,16}, {16,16})) {}
 void Player::initialisePlayer(){
     texture = std::make_shared<sf::Texture>(TextureManager::loadTexture("mariosheet.png"));
     sprite = std::make_unique<sf::Sprite>(*texture);
-    animationSubManager.loadAnimations(AnimationManager::loadAnimation("anim_player.json"));
+    auto* anims = AnimationManager::loadAnimationFile("anim_player.json");
+    animationSubManager.loadAnimations(anims);
 }
 
 sf::FloatRect Player::getBoundingBox() const{
@@ -86,11 +87,15 @@ void Player::moveY(float deltaTime){
 
 void Player::update(float deltaTime) {
     if (!sprite){
-        throw std::runtime_error("Player object unitialised!");
+        throw std::runtime_error("Player object uninitialised!");
     }
     onGround = false;
     move(deltaTime);
+    updateAnimation(deltaTime);
+    physicsBox.position = position;
+}
 
+void Player::updateAnimation(float deltaTime){
     if (isJumping){
         animationSubManager.playAnimation("jump");
     }
@@ -125,7 +130,6 @@ void Player::update(float deltaTime) {
         currentAnimation->setFrameDurationScale(14.f * animationScale / 60.f);
         currentAnimation->update(deltaTime);
     }
-    physicsBox.position = position;
 }
 
 void Player::collide(const CollisionSide side, const sf::FloatRect overlap){

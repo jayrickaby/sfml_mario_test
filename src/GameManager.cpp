@@ -71,6 +71,12 @@ void GameManager::updateGame(){
     float deltaTime = clock.restart().asSeconds();
     player.update(deltaTime);
 
+    for (Tile& tile : level.tiles){
+        if (tile.isAnimated()){
+            tile.update(deltaTime);
+        }
+    }
+
     checkForCollisions();
 }
 
@@ -92,6 +98,7 @@ void GameManager::checkForCollisions(){
         if (intersection.has_value()){
             sf::FloatRect overlap = intersection.value();
             CollisionSide side = getCollisionSide(player.getBoundingBox(), collisionBox);
+            // @TODO USE SWEEPING AABB TO REMOVE TUNNELLING
             player.collide(side, overlap);
         }
     }

@@ -4,11 +4,19 @@
 
 #include "Tile.h"
 
+#include <iostream>
+
 #include "TextureManager.h"
 
 Tile::Tile():
 sprite(TextureManager::loadTexture("tiles/missing.png"))
 {}
+
+void Tile::update(float deltaTime){
+    auto* anim = animationSubManager->getCurrentAnimation();
+    sprite.setTextureRect(anim->getFrameRect());
+    anim->update(deltaTime);
+}
 
 void Tile::draw(sf::RenderTarget& target) const{
     target.draw(sprite);
@@ -28,4 +36,24 @@ void Tile::setPosition(const sf::Vector2f& position){
 
 void Tile::setTextureIndex(const int index){
     sprite.setTexture(*textures[index]);
+}
+
+bool Tile::isAnimated() const{
+    return animationSubManager.has_value();
+}
+
+void Tile::setAnimated(){
+    animationSubManager = AnimationSubManager();
+}
+
+void Tile::addAnimations(const std::map<std::string, Animation>* animations){
+    animationSubManager->loadAnimations(animations);
+}
+
+void Tile::playAnimation(const std::string& name){
+    animationSubManager->playAnimation(name);
+}
+
+void Tile::setFrameDurationScale(const float& scale){
+    animationSubManager->getCurrentAnimation()->setFrameDurationScale(scale);
 }
