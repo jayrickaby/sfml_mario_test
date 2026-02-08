@@ -18,16 +18,14 @@ public:
     GameManager() = default;
     ~GameManager() = default;
 
+    static void setWindow(sf::RenderWindow& targetWindow);
     static void initialiseGame(const std::string& path);
     static void initialiseGame();
-    static void checkForEvents(sf::RenderWindow& window);
-    static void updateGame(sf::RenderWindow& window);
+    static void updateGame();
     static void drawGame(sf::RenderTarget& target);
 
     static CollisionSide getCollisionSide(const sf::FloatRect& a, const sf::FloatRect& b);
 
-
-    // Getter
     static std::string getAssetPath() { return assetPath; }
 
 private:
@@ -35,7 +33,15 @@ private:
     static Player player;
     static Level level;
 
+    static sf::RenderWindow* window;
+
     static std::string assetPath;
+
+    static void initialiseManagers();
+    static void checkForCollisions();
+    static void handleInput();
+    static void checkForEvents();
+    static void setupLevel();
 };
 
 

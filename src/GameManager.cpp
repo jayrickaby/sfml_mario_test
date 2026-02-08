@@ -14,25 +14,11 @@
 sf::Clock GameManager::clock;
 Player GameManager::player;
 Level GameManager::level;
+sf::RenderWindow* GameManager::window;
 std::string GameManager::assetPath;
 
-void initialiseGame(const std::string& assetPath);
-void updateGame(sf::RenderWindow& window);
-void drawGame(sf::RenderTarget& target);
-CollisionSide getCollisionSide(const sf::FloatRect& a, const sf::FloatRect& b);
-
-void GameManager::initialiseGame(const std::string& path){
-    assetPath = path;
-    std::cout << "Initialising game..." << std::endl;
-    AnimationManager::initialiseAnimations();
-    TextureManager::initialiseTextures();
-    TileManager::initialiseTiles();
-    LevelManager::initialiseLevels();
-    player.initialisePlayer();
-
-    level = LevelManager::loadLevel("1-1");
-
-    player.setPosition({level.playerStartPosition});
+void GameManager::setWindow(sf::RenderWindow& targetWindow){
+    window = &targetWindow;
 }
 
 void GameManager::initialiseGame(){
@@ -42,10 +28,30 @@ void GameManager::initialiseGame(){
     initialiseGame(assetPath);
 }
 
-void GameManager::checkForEvents(sf::RenderWindow& window){
-    while (const std::optional event = window.pollEvent()) {
+void GameManager::initialiseGame(const std::string& path){
+    assetPath = path;
+    std::cout << "Initialising game..." << std::endl;
+    initialiseManagers();
+    player.initialisePlayer();
+    setupLevel();
+}
+
+void GameManager::setupLevel(){
+    level = LevelManager::loadLevel("1-1");
+    player.setPosition({level.playerStartPosition});
+}
+
+void GameManager::initialiseManagers(){
+    AnimationManager::initialiseAnimations();
+    TextureManager::initialiseTextures();
+    TileManager::initialiseTiles();
+    LevelManager::initialiseLevels();
+}
+
+void GameManager::checkForEvents(){
+    while (const std::optional event = window->pollEvent()) {
         if (event->is<sf::Event::Closed>()){
-            window.close();
+            window->close();
         }
         else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
             InputManager::setLastKeyPressed(keyPressed->code);
@@ -58,24 +64,35 @@ void GameManager::checkForEvents(sf::RenderWindow& window){
     }
 }
 
-void GameManager::updateGame(sf::RenderWindow& window){
-    checkForEvents(window);
+void GameManager::updateGame(){
+    checkForEvents();
+    handleInput();
 
+    float deltaTime = clock.restart().asSeconds();
+    player.update(deltaTime);
+
+    checkForCollisions();
+}
+
+void GameManager::handleInput(){
     if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Escape)){
-        window.close();
+        window->close();
     }
     else if (InputManager::isKeyPressed(sf::Keyboard::Key::F3) && InputManager::isLastKeyPressed(sf::Keyboard::Key::A)){
         std::cout << "Reloading assets..." << std::endl;
         initialiseGame();
     }
 
-    float deltaTime = clock.restart().asSeconds();
-    player.update(deltaTime);
+    player.handleInput();
+}
 
+void GameManager::checkForCollisions(){
     for (auto& collisionBox : level.levelCollisions){
-        if (collisionBox.findIntersection(player.getBoundingBox())){
+        auto intersection = collisionBox.findIntersection(player.getBoundingBox());
+        if (intersection.has_value()){
+            sf::FloatRect overlap = intersection.value();
             CollisionSide side = getCollisionSide(player.getBoundingBox(), collisionBox);
-            player.collide(side, collisionBox.findIntersection(player.getBoundingBox()).value());
+            player.collide(side, overlap);
         }
     }
 }
@@ -100,7 +117,7 @@ CollisionSide GameManager::getCollisionSide(const sf::FloatRect& a, const sf::Fl
         if (overlap.position.x + overlap.size.x < b.getCenter().x){
             return Left;
         }
-        else if (overlap.position.x + overlap.size.x > b.getCenter().x){
+        if (overlap.position.x + overlap.size.x > b.getCenter().x){
             return Right;
         }
     }
@@ -108,7 +125,7 @@ CollisionSide GameManager::getCollisionSide(const sf::FloatRect& a, const sf::Fl
         if (overlap.position.y + overlap.size.y < b.getCenter().y){
             return Top;
         }
-        else if (overlap.position.y + overlap.size.y > b.getCenter().y){
+        if (overlap.position.y + overlap.size.y > b.getCenter().y){
             return Bottom;
         }
     }

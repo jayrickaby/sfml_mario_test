@@ -88,7 +88,6 @@ void Player::update(float deltaTime) {
     if (!sprite){
         throw std::runtime_error("Player object unitialised!");
     }
-    handleInput();
     onGround = false;
     move(deltaTime);
 
