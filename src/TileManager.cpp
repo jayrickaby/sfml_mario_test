@@ -5,50 +5,48 @@
 #include "TileManager.h"
 
 #include <fstream>
-#include <filesystem>
 #include <iostream>
 #include <nlohmann/json.hpp>
 
 #include "GameManager.h"
+#include "ManagerUtilities.h"
 #include "TextureManager.h"
 
 std::map<std::string, Tile> TileManager::tiles = {};
+std::string TileManager::fullPath = "";
 
 void TileManager::initialiseTiles(){
-    std::string path = GameManager::getAssetPath() + "models/";
-    if (!std::filesystem::is_directory(path)){
-        throw std::runtime_error("Could not find directory: \"" + path + "\"");
-    }
-    if (!TextureManager::isInitialised()){
-        throw std::runtime_error("Cannot initialise tiles before initialising textures!");
-    }
-    const std::filesystem::path directory{path};
+    fullPath = GameManager::getAssetPath() + "models/";
 
-    for (auto const& dirEntry : std::filesystem::recursive_directory_iterator{directory}){
-        if (dirEntry.is_directory()){
-            continue;
+    std::vector files(ManagerUtilities::findFiles(fullPath, {".json"}));
+
+    for (std::string& file : files){
+        Tile tile = initialiseTile(file);
+        std::string tileName = std::filesystem::path(fullPath + file).stem().string();
+        std::cout << "Initialised tile: \"" << tileName << "\"" << std::endl;
+        tiles.emplace(tileName, tile);
+    }
+}
+
+Tile TileManager::initialiseTile(std::string& path){
+    Tile tile;
+    std::ifstream modelFileData(fullPath + path);
+    nlohmann::json modelFile = nlohmann::json::parse(modelFileData);
+    if (modelFile["textures"].empty()){
+        throw std::runtime_error("Model \"" + path + "\" has no textures!");
+    }
+    for (const auto& texture : modelFile["textures"]){
+        std::string textureName = texture.get<std::string>();
+        if (TextureManager::isTexture(textureName)){
+            tile.addTexture(TextureManager::loadTexture(textureName));
         }
-        auto modelPath = dirEntry.path().string();
-
-        if (dirEntry.path().extension() == ".json"){
-            Tile tile;
-            std::ifstream modelFileData(modelPath);
-            nlohmann::json file = nlohmann::json::parse(modelFileData);
-            if (file["textures"].empty()){
-                throw std::runtime_error("Model \"" + modelPath + "\" has no textures!");
-            }
-            for (const auto& texture : file["textures"]){
-                std::string textureName = texture.get<std::string>();
-                if (TextureManager::isTexture(textureName)){
-                    tile.addTexture(TextureManager::loadTexture(textureName));
-                }
-            }
-            tile.setTextureIndex(0);
-            std::string tileName = dirEntry.path().stem().string();
-            std::cout << "Initialised tile: \"" << tileName << "\"" << std::endl;
-            tiles.emplace(tileName, tile);
+        else{
+            throw std::runtime_error("Texture \"" + textureName + "\" not found!");
         }
     }
+
+    tile.setTextureIndex(0);
+    return tile;
 }
 
 bool TileManager::isTile(const std::string& name){

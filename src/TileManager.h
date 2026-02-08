@@ -16,12 +16,14 @@ public:
     ~TileManager() = default;
 
     static void initialiseTiles();
+    static Tile initialiseTile(std::string& path);
     static bool isTile(const std::string& name);
     static bool isInitialised();
     static Tile* loadTile(const std::string& name);
 
 private:
     static std::map<std::string, Tile> tiles;
+    static std::string fullPath;
 };
 
 

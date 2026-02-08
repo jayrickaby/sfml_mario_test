@@ -9,33 +9,20 @@
 
 #include "Animation.h"
 #include "GameManager.h"
+#include "ManagerUtilities.h"
 
 std::map<std::string, std::map<std::string, Animation>> AnimationManager::animations = {};
 std::string AnimationManager::fullPath = "";
 
 void AnimationManager::initialiseAnimations(){
     fullPath = GameManager::getAssetPath() + "animations/";
-    if (!std::filesystem::is_directory(fullPath)){
-        throw std::runtime_error("Could not find directory: \"" + fullPath + "\"");
-    }
-    const std::filesystem::path animationFilePath(fullPath);
 
-    for (auto const& dirEntry : std::filesystem::directory_iterator(animationFilePath)){
-        if (dirEntry.is_directory()){
-            continue;
-        }
+    std::vector files(ManagerUtilities::findFiles(fullPath, {".json"}));
 
-        std::string animationPath = std::filesystem::relative(dirEntry, fullPath).string();
-
-        if (dirEntry.path().extension().string() == ".json"){
-            std::map animationsList{parseAnimations(fullPath + animationPath)};
-
-            animations.emplace(animationPath, animationsList);
-            std::cout << "Initialised animation file: " << (animationPath) << std::endl;
-        }
-        else{
-            std::cout << "Incompatible animation file: " << (animationPath) << std::endl;
-        }
+    for (std::string& file : files){
+        std::map animationsList{parseAnimations(fullPath + file)};
+        animations.emplace(file, animationsList);
+        std::cout << "Initialised animation: \"" << file << "\"" << std::endl;
     }
 }
 

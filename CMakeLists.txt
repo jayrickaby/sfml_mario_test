@@ -28,6 +28,8 @@ add_executable(sfml_mario_test src/main.cpp
         src/CollisionSide.h
         src/AnimationSubManager.cpp
         src/AnimationSubManager.h
+        src/ManagerUtilities.cpp
+        src/ManagerUtilities.h
 )
 
 find_package(SFML 3.0 COMPONENTS Graphics Audio REQUIRED)

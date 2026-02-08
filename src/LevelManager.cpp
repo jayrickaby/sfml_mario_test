@@ -11,34 +11,17 @@
 #include <nlohmann/json.hpp>
 
 #include "GameManager.h"
+#include "ManagerUtilities.h"
 
 std::vector<std::string> LevelManager::levels = {};
 std::string LevelManager::fullPath;
 
 void LevelManager::initialiseLevels(){
     fullPath = GameManager::getAssetPath() + "levels/";
-    if (!std::filesystem::is_directory(fullPath)){
-        throw std::runtime_error("Could not find directory: \"" + fullPath + "\"");
-    }
-    if (!TileManager::isInitialised()){
-        throw std::runtime_error("Cannot initialise levels before initialising tiles!");
-    }
-    const std::filesystem::path directory{fullPath};
 
-    for (auto const& dirEntry : std::filesystem::directory_iterator{directory}){
-        if (dirEntry.is_directory()){
-            continue;
-        }
-
-        const std::string levelPath = std::filesystem::relative(dirEntry, fullPath).string();
-
-        if (dirEntry.path().extension().string() == ".json"){
-            levels.emplace_back(levelPath);
-            std::cout << "Initialised level: \"" << levelPath << "\"" << std::endl;
-        }
-        else{
-            std::cout << "Incompatible level file: \"" << levelPath << "\"" << std::endl;
-        }
+    levels = ManagerUtilities::findFiles(fullPath, {".json"});
+    for (const std::string& level : levels){
+        std::cout << "Initialised level: \"" << level << "\"" << std::endl;
     }
 }
 
