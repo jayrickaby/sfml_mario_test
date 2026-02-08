@@ -38,7 +38,7 @@ void TileManager::initialiseTiles(){
                 throw std::runtime_error("Model \"" + modelPath + "\" has no textures!");
             }
             for (const auto& texture : file["textures"]){
-                std::string textureName = "assets/textures/" + texture.get<std::string>();
+                std::string textureName = texture.get<std::string>();
                 if (TextureManager::isTexture(textureName)){
                     tile.addTexture(TextureManager::loadTexture(textureName));
                 }

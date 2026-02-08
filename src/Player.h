@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Animation.h"
+#include "AnimationSubManager.h"
 #include "CollisionSide.h"
 
 class Tile;
@@ -23,7 +24,7 @@ public:
     void collideX(CollisionSide side, sf::FloatRect overlap);
     void collideY(CollisionSide side, sf::FloatRect overlap);
     void handleInput();
-    void draw(sf::RenderTarget& target);
+    void draw(sf::RenderTarget& target) const;
     void initialisePlayer();
 
     // Getters
@@ -31,16 +32,13 @@ public:
     sf::Vector2f getPosition() const;
 
     // Setters
-    void setAnimation(const std::string& name);
     void setPosition(const sf::Vector2f& pos) {position = pos;}
 
 private:
     // Appearance
     std::shared_ptr<sf::Texture> texture;
     std::unique_ptr<sf::Sprite> sprite;
-    std::map<std::string, Animation> animations;
-    Animation* currentAnimation;
-    std::string currentAnimationName;
+    AnimationSubManager animationSubManager;
 
     // Physics
     bool onGround;

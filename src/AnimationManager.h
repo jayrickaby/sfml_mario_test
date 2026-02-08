@@ -21,6 +21,7 @@ public:
 private:
     // e.g.             Player                 Idle     [data]
     static std::map<std::string, std::map<std::string, Animation>> animations;
+    static std::string fullPath;
 
     static Frame parseFrame(const nlohmann::basic_json<>& frameData);
     static std::map<std::string, Animation> parseAnimations(const std::string& path);

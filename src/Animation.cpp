@@ -4,6 +4,10 @@
 
 #include "Animation.h"
 
+Animation::Animation(const std::string& givenName):
+name(givenName)
+{}
+
 void Animation::update(float deltaTime) {
     if (!isAnimated()) {
         frameTimer = 0.f;
@@ -54,4 +58,8 @@ void Animation::reset() {
     frameDurationScale = 1.f;
     frameTimer = 0.f;
     currentIndex = 0;
+}
+
+std::string Animation::getName() const{
+    return name;
 }

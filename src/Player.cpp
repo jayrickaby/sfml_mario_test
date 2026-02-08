@@ -17,7 +17,7 @@
 
 Player::Player() :
 //@TODO store configurables in some .cfg file
-currentAnimation(nullptr),
+animationSubManager(),
 onGround(false),
 isJumping(false),
 isSkidding(false),
@@ -35,9 +35,9 @@ physicsBox(sf::FloatRect({16,16}, {16,16})) {}
 
 // Player tries to grab textures before they even exist. This allows that to be seperately handled
 void Player::initialisePlayer(){
-    texture = std::make_shared<sf::Texture>(TextureManager::loadTexture("assets/textures/mariosheet.png"));
+    texture = std::make_shared<sf::Texture>(TextureManager::loadTexture("mariosheet.png"));
     sprite = std::make_unique<sf::Sprite>(*texture);
-    animations = *AnimationManager::loadAnimation("assets/animations/anim_player.json");
+    animationSubManager.loadAnimations(AnimationManager::loadAnimation("anim_player.json"));
 }
 
 sf::FloatRect Player::getBoundingBox() const{
@@ -71,7 +71,7 @@ void Player::moveX(float deltaTime){
         isSkidding = true;
     }
     // We do this so that player keeps skidding until fully turned around
-    else if ((currentAnimationName == "skid") && ((velocity.x > 0.f && direction == -1 ) || (velocity.x < 0.f && direction == 1))){
+    else if (animationSubManager.getCurrentAnimationName() == "skid" && ((velocity.x > 0.f && direction == -1 ) || (velocity.x < 0.f && direction == 1))){
         isSkidding = true;
     }
     else{
@@ -92,16 +92,16 @@ void Player::update(float deltaTime) {
     move(deltaTime);
 
     if (isJumping){
-        setAnimation("jump");
+        animationSubManager.playAnimation("jump");
     }
     else if (isSkidding){
-        setAnimation("skid");
+        animationSubManager.playAnimation("skid");
     }
     else if(velocity.x != 0){
-        setAnimation("walk");
+        animationSubManager.playAnimation("walk");
     }
     else{
-        setAnimation("idle");
+        animationSubManager.playAnimation("idle");
     }
 
     const float absVelocityX = std::fabs(velocity.x);
@@ -109,6 +109,8 @@ void Player::update(float deltaTime) {
     // Offsets the animationScale a little so that it looks better
     constexpr float animationScaleOffset = 0.4f;
     float animationScale = (1.f - (absVelocityX / walkSpeed)) + animationScaleOffset;
+
+    Animation* currentAnimation = animationSubManager.getCurrentAnimation();
 
     if (currentAnimation != nullptr) {
         if (direction != 0){
@@ -182,23 +184,6 @@ void Player::handleInput() {
     }
 }
 
-void Player::draw(sf::RenderTarget& target) {
+void Player::draw(sf::RenderTarget& target) const{
     target.draw(*sprite);
-}
-
-void Player::setAnimation(const std::string& name) {
-    if (currentAnimationName == name){
-      return;
-    }
-    if (currentAnimation != nullptr) {
-        currentAnimation->reset();
-    }
-
-    if (animations.contains(name)) {
-        currentAnimationName = name;
-        currentAnimation = &animations.at(currentAnimationName);
-    }
-    else {
-        throw std::runtime_error("Animation \"" + name + "\" doesn't exist!");
-    }
 }

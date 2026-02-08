@@ -9,31 +9,32 @@
 
 #include "Animation.h"
 #include "GameManager.h"
-#include "TextureManager.h"
 
 std::map<std::string, std::map<std::string, Animation>> AnimationManager::animations = {};
-Frame parseFrame(const nlohmann::basic_json<>& frameData);
-std::map<std::string, Animation> parseAnimations(const std::string& path);
-Animation parseAnimation(const nlohmann::basic_json<>& animationData);
+std::string AnimationManager::fullPath = "";
 
 void AnimationManager::initialiseAnimations(){
-    std::string path = GameManager::getAssetPath() + "animations/";
-    if (!std::filesystem::is_directory(path)){
-        throw std::runtime_error("Could not find directory: \"" + path + "\"");
+    fullPath = GameManager::getAssetPath() + "animations/";
+    if (!std::filesystem::is_directory(fullPath)){
+        throw std::runtime_error("Could not find directory: \"" + fullPath + "\"");
     }
-    const std::filesystem::path animationFilePath(path);
+    const std::filesystem::path animationFilePath(fullPath);
 
     for (auto const& dirEntry : std::filesystem::directory_iterator(animationFilePath)){
-        auto animationPath = dirEntry.path().string();
+        if (dirEntry.is_directory()){
+            continue;
+        }
 
-        if (dirEntry.path().extension() == ".json"){
-            std::map animationsList{parseAnimations(animationPath)};
+        std::string animationPath = std::filesystem::relative(dirEntry, fullPath).string();
+
+        if (dirEntry.path().extension().string() == ".json"){
+            std::map animationsList{parseAnimations(fullPath + animationPath)};
 
             animations.emplace(animationPath, animationsList);
-            std::cout << "Initialised animation file: " << (dirEntry) << std::endl;
+            std::cout << "Initialised animation file: " << (animationPath) << std::endl;
         }
         else{
-            std::cout << "Incompatible animation file: " << (dirEntry) << std::endl;
+            std::cout << "Incompatible animation file: " << (animationPath) << std::endl;
         }
     }
 }
@@ -83,7 +84,7 @@ std::map<std::string, Animation> AnimationManager::parseAnimations(const std::st
 }
 
 Animation AnimationManager::parseAnimation(const nlohmann::basic_json<>& animationData){
-    Animation animation;
+    Animation animation(animationData["name"]);
     for (const auto& frameData : animationData["frames"]){
         animation.addFrame(parseFrame(frameData));
     }

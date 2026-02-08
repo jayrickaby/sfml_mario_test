@@ -30,7 +30,7 @@ public:
 
 private:
     static std::vector<std::string> levels;
-    static std::string levelDirectory;
+    static std::string fullPath;
 };
 
 

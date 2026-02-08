@@ -16,49 +16,49 @@
 #include "GameManager.h"
 
 std::map<std::string,sf::Texture> TextureManager::textures = {};
+std::string TextureManager::fullPath = "";
 
 // @TODO Texture atlassing!
 void TextureManager::initialiseTextures(){
-    std::string path = GameManager::getAssetPath() + "textures/";
-    if (!std::filesystem::is_directory(path)){
-        throw std::runtime_error("Could not find directory: \"" + path + "\"");
+    fullPath = GameManager::getAssetPath() + "textures/";
+    if (!std::filesystem::is_directory(fullPath)){
+        throw std::runtime_error("Could not find directory: \"" + fullPath + "\"");
     }
-    const std::filesystem::path directory{path};
+    const std::filesystem::path directory{fullPath};
 
     for (auto const& dirEntry : std::filesystem::recursive_directory_iterator{directory}){
         if (dirEntry.is_directory()){
             continue;
         }
 
-        auto texturePath = dirEntry.path().string();
-
+        std::string texturePath = std::filesystem::relative(dirEntry, fullPath).string();
         // Only accept .png
         if (dirEntry.path().extension().string() == ".png"){
-            TextureManager::textures.emplace(texturePath, sf::Texture(texturePath));
-            std::cout << "Initialised texture: " << (dirEntry) << std::endl;
+            textures.emplace(texturePath, sf::Texture(fullPath + texturePath));
+            std::cout << "Initialised texture: " << (texturePath) << std::endl;
         }
         else{
-            std::cout << "Incompatible texture file: " << (dirEntry) << std::endl;
+            std::cout << "Incompatible texture file: " << (texturePath) << std::endl;
         }
     }
 }
 
-bool TextureManager::isTexture(const std::string& path){
+bool TextureManager::isTexture(const std::string& name){
     if (!isInitialised()){
         throw std::runtime_error("No textures initialised!");
     }
-    if (!textures.contains(path)){
+    if (!textures.contains(name)){
         return false;
     }
     return true;
 }
 
-sf::Texture& TextureManager::loadTexture(const std::string& path){
-    if (!isTexture(path)){
-        throw std::runtime_error("Could not find texture: \"" + path + "\"");
+sf::Texture& TextureManager::loadTexture(const std::string& name){
+    if (!isTexture(name)){
+        throw std::runtime_error("Could not find texture: \"" + name + "\"");
     }
-    std::cout << "Loaded texture: \"" << path << "\"" << std::endl;
-    return textures.at(path);
+    std::cout << "Loaded texture: \"" << name << "\"" << std::endl;
+    return textures.at(name);
 }
 
 bool TextureManager::isInitialised(){

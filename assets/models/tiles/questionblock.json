@@ -1,4 +1,5 @@
 {
+  "animation": "tiles/anim_questionblock",
   "textures": [
     "tiles/questionblock.png"
   ]

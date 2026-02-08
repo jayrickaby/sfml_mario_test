@@ -13,27 +13,31 @@
 #include "GameManager.h"
 
 std::vector<std::string> LevelManager::levels = {};
-std::string LevelManager::levelDirectory;
+std::string LevelManager::fullPath;
 
 void LevelManager::initialiseLevels(){
-    levelDirectory = GameManager::getAssetPath() + "levels/";
-    if (!std::filesystem::is_directory(levelDirectory)){
-        throw std::runtime_error("Could not find directory: \"" + levelDirectory + "\"");
+    fullPath = GameManager::getAssetPath() + "levels/";
+    if (!std::filesystem::is_directory(fullPath)){
+        throw std::runtime_error("Could not find directory: \"" + fullPath + "\"");
     }
     if (!TileManager::isInitialised()){
         throw std::runtime_error("Cannot initialise levels before initialising tiles!");
     }
-    const std::filesystem::path directory{levelDirectory};
+    const std::filesystem::path directory{fullPath};
 
     for (auto const& dirEntry : std::filesystem::directory_iterator{directory}){
-        auto levelPath = dirEntry.path().string();
+        if (dirEntry.is_directory()){
+            continue;
+        }
 
-        if (dirEntry.path().extension() == ".json"){
-            levels.emplace_back(dirEntry.path().stem().string());
-            std::cout << "Initialised level: \"" << dirEntry.path().stem().string() << "\"" << std::endl;
+        const std::string levelPath = std::filesystem::relative(dirEntry, fullPath).string();
+
+        if (dirEntry.path().extension().string() == ".json"){
+            levels.emplace_back(levelPath);
+            std::cout << "Initialised level: \"" << levelPath << "\"" << std::endl;
         }
         else{
-            std::cout << "Incompatible level file: \"" << dirEntry.path().string() << "\"" << std::endl;
+            std::cout << "Incompatible level file: \"" << levelPath << "\"" << std::endl;
         }
     }
 }
@@ -43,7 +47,7 @@ Level LevelManager::loadLevel(const std::string& name){
         throw std::runtime_error("Could not find level: \"" + name + "\"");
     }
     Level level;
-    std::string path = levelDirectory + name + ".json";
+    std::string path = fullPath + name;
     std::ifstream levelFileData(path);
     nlohmann::json file = nlohmann::json::parse(levelFileData);
     if (file["backgroundOverride"] == -1){
@@ -53,7 +57,6 @@ Level LevelManager::loadLevel(const std::string& name){
     if (playerData.empty()){
         throw std::runtime_error("Player data in level not defined!");
     }
-    std::cout << playerData << std::endl;
     if (playerData["pos"].empty()){
         throw std::runtime_error("Player position in level not defined!");
     }

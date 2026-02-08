@@ -7,7 +7,7 @@
 #include "TextureManager.h"
 
 Tile::Tile():
-sprite(TextureManager::loadTexture("assets/textures/tiles/missing.png"))
+sprite(TextureManager::loadTexture("tiles/missing.png"))
 {}
 
 void Tile::draw(sf::RenderTarget& target) const{

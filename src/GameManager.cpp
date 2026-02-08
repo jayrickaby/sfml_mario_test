@@ -37,7 +37,7 @@ void GameManager::initialiseGame(const std::string& path){
 }
 
 void GameManager::setupLevel(){
-    level = LevelManager::loadLevel("1-1");
+    level = LevelManager::loadLevel("1-1.json");
     player.setPosition({level.playerStartPosition});
 }
 

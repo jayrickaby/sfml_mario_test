@@ -20,12 +20,13 @@ public:
     ~TextureManager() = default;
 
     static void initialiseTextures();
-    static bool isTexture(const std::string& path);
+    static bool isTexture(const std::string& name);
     static bool isInitialised();
-    static sf::Texture& loadTexture(const std::string& path);
+    static sf::Texture& loadTexture(const std::string& name);
 
 private:
     static std::map<std::string,sf::Texture> textures;
+    static std::string fullPath;
 };
 
 

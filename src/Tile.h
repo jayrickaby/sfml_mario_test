@@ -6,6 +6,8 @@
 #define SFML_MARIO_TEST_TILE_H
 #include <SFML/Graphics.hpp>
 
+#include "Animation.h"
+
 class Tile{
 public:
     Tile();
@@ -23,5 +25,6 @@ public:
 private:
     std::vector<const sf::Texture*> textures = {};
     sf::Sprite sprite;
+    //Animation animation;
 };
 #endif //SFML_MARIO_TEST_TILE_H

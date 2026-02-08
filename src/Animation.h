@@ -13,13 +13,14 @@ struct Frame {
 
 class Animation {
 public:
-    Animation() = default;
+    Animation(const std::string& givenName);
     void update(float deltaTime);
 
     // Verifiers
     bool isAnimated() const;
 
     // Getters
+    std::string getName() const;
     sf::IntRect getFrameRect() const;
 
     // Setters
@@ -30,6 +31,7 @@ public:
     void reset();
 
 private:
+    std::string name;
     std::vector<Frame> frames;
     unsigned int currentIndex = 0;
     float frameTimer = 0;
