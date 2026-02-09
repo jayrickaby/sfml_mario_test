@@ -1,0 +1,16 @@
+tiles arent always just solid.
+some can be walk through, others are animated, or interactable
+
+
+define some TileType enum
+enum TileType{
+    Air,
+    Solid,
+    ItemBlock,
+    BreakableBlock
+}
+
+Air             --> Passable.
+Solid           --> Generic Solid.
+ItemBlock       --> Contains item. Turns into a solid hard block when depleted.
+BreakableBlock  --> Breaks on certain conditions, or just otherwise bounces.

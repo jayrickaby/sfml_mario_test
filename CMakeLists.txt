@@ -7,30 +7,32 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_executable(sfml_mario_test src/main.cpp
         src/Player.cpp
         src/Player.h
-        src/TextureManager.cpp
-        src/TextureManager.h
-        src/Animation.cpp
-        src/Animation.h
-        src/AnimationManager.cpp
-        src/AnimationManager.h
-        src/TileManager.cpp
-        src/TileManager.h
-        src/Tile.cpp
-        src/Tile.h
-        src/LevelManager.cpp
-        src/LevelManager.h
-        src/GameManager.cpp
-        src/GameManager.h
-        src/InputManager.cpp
-        src/InputManager.h
-        src/CollisionSide.cpp
-        src/CollisionSide.h
-        src/AnimationSubManager.cpp
-        src/AnimationSubManager.h
-        src/ManagerUtilities.cpp
-        src/ManagerUtilities.h
+        src/Managers/TextureManager.cpp
+        src/Managers/TextureManager.h
+        src/Types/Animation.cpp
+        src/Types/Animation.h
+        src/Managers/AnimationManager.cpp
+        src/Managers/AnimationManager.h
+        src/Managers/TileManager.cpp
+        src/Managers/TileManager.h
+        src/Types/Tile.cpp
+        src/Types/Tile.h
+        src/Managers/LevelManager.cpp
+        src/Managers/LevelManager.h
+        src/Managers/GameManager.cpp
+        src/Managers/GameManager.h
+        src/Managers/InputManager.cpp
+        src/Managers/InputManager.h
+        src/Types/CollisionSide.cpp
+        src/Types/CollisionSide.h
+        src/Managers/AnimationSubManager.cpp
+        src/Managers/AnimationSubManager.h
+        src/Managers/ManagerUtilities.cpp
+        src/Managers/ManagerUtilities.h
         src/Globals.cpp
         src/Globals.h
+        src/Managers/SoundManager.cpp
+        src/Managers/SoundManager.h
 )
 
 find_package(SFML 3.0 COMPONENTS Graphics Audio REQUIRED)

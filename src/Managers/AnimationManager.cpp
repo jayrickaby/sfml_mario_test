@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "Animation.h"
+#include "../Types/Animation.h"
 #include "GameManager.h"
 #include "ManagerUtilities.h"
 

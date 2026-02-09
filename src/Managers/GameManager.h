@@ -7,9 +7,9 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
-#include "CollisionSide.h"
+#include "../Types/CollisionSide.h"
 #include "LevelManager.h"
-#include "Player.h"
+#include "../Player.h"
 
 class GameManager{
 public:

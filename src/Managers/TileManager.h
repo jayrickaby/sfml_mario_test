@@ -8,7 +8,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
-#include "Tile.h"
+#include "../Types/Tile.h"
 
 struct TileJson{
     std::string animationFile;

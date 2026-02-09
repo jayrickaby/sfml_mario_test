@@ -8,12 +8,13 @@
 #include <iostream>
 #include <random>
 
-#include "AnimationManager.h"
-#include "GameManager.h"
+#include "Managers/AnimationManager.h"
+#include "Managers/GameManager.h"
 #include "Globals.h"
-#include "InputManager.h"
-#include "TextureManager.h"
-#include "Tile.h"
+#include "Managers/InputManager.h"
+#include "Managers/SoundManager.h"
+#include "Managers/TextureManager.h"
+#include "Types/Tile.h"
 
 Player::Player() :
 //@TODO store configurables in some .cfg file
@@ -100,6 +101,9 @@ void Player::updateAnimation(){
         animationSubManager.playAnimation("jump");
     }
     else if (isSkidding){
+        if (animationSubManager.getCurrentAnimationName() != "skid"){
+            SoundManager::playSoundFile("snd_skid.ogg");
+        }
         animationSubManager.playAnimation("skid");
     }
     else if(velocity.x != 0){
@@ -185,6 +189,7 @@ void Player::handleInput() {
         onGround = false;
         isJumping = true;
         velocity.y -= jumpStrength;
+        SoundManager::playSoundFile("snd_jump.ogg");
     }
 }
 

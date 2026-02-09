@@ -7,8 +7,9 @@
 #include <iostream>
 
 #include "AnimationManager.h"
-#include "Globals.h"
+#include "../Globals.h"
 #include "InputManager.h"
+#include "SoundManager.h"
 #include "TextureManager.h"
 #include "TileManager.h"
 
@@ -46,6 +47,7 @@ void GameManager::initialiseManagers(){
     TextureManager::initialiseTextures();
     TileManager::initialiseTiles();
     LevelManager::initialiseLevels();
+    SoundManager::initialiseSoundFiles();
 }
 
 void GameManager::checkForEvents(){
@@ -68,6 +70,7 @@ void GameManager::updateGame(){
     checkForEvents();
     handleInput();
 
+    SoundManager::clearStoppedSounds();
     Globals::updateDeltaTime();
     player.update();
 

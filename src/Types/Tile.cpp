@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "TextureManager.h"
+#include "../Managers/TextureManager.h"
 
 Tile::Tile():
 sprite(TextureManager::loadTexture("tiles/missing.png"))

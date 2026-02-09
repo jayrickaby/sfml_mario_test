@@ -4,12 +4,10 @@
 
 #ifndef SFML_MARIO_TEST_PLAYER_H
 #define SFML_MARIO_TEST_PLAYER_H
-#include <map>
 #include <SFML/Graphics.hpp>
 
-#include "Animation.h"
-#include "AnimationSubManager.h"
-#include "CollisionSide.h"
+#include "Managers/AnimationSubManager.h"
+#include "Types/CollisionSide.h"
 
 class Tile;
 

@@ -6,7 +6,7 @@
 #define SFML_MARIO_TEST_ANIMATIONMANAGER_H
 
 #include <nlohmann/json.hpp>
-#include "Animation.h"
+#include "../Types/Animation.h"
 
 class Animation;
 

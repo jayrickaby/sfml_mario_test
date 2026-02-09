@@ -7,7 +7,7 @@
 #include <map>
 #include <string>
 
-#include "Animation.h"
+#include "../Types/Animation.h"
 
 
 class AnimationSubManager{

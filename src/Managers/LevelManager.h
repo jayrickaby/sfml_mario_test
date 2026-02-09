@@ -8,7 +8,7 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 
-#include "Tile.h"
+#include "../Types/Tile.h"
 
 struct Level{
     std::vector<Tile> tiles;

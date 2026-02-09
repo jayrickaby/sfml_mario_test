@@ -4,7 +4,7 @@
 
 #include "Animation.h"
 
-#include "Globals.h"
+#include "../Globals.h"
 
 Animation::Animation(const std::string& givenName):
 name(givenName)

@@ -1,0 +1,11 @@
+currently collision boxes cover large sections of tiles
+what if we need to do something that requires individual tile collision, or non at all?
+e.g.:
+    - player hitting a qblock from the bottom and a coin coming out?
+    - background hill stuff
+
+TileType::Air               --> no collision boxes created
+TileType::Solid             --> big collision boxes created
+TileType::ItemBlock         -->
+TileType::BreakableBlock
+

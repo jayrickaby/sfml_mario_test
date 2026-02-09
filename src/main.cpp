@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
 
-#include "GameManager.h"
+#include "Managers/GameManager.h"
 #include "Globals.h"
 
 using json = nlohmann::json;
