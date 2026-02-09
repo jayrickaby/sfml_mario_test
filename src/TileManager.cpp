@@ -19,38 +19,32 @@ std::string TileManager::fullPath = "";
 void TileManager::initialiseTiles(){
     fullPath = GameManager::getAssetPath() + "models/";
 
-    std::vector files(ManagerUtilities::findFiles(fullPath, {".json"}));
+    const std::vector files(ManagerUtilities::findFiles(fullPath, {".json"}));
 
-    for (std::string& file : files){
-        Tile tile = initialiseTile(file);
-        std::string tileName = std::filesystem::path(fullPath + file).stem().string();
+    for (const std::string& file : files){
+        const Tile tile{initialiseTile(file)};
+        const std::string tileName{std::filesystem::path(fullPath + file).stem().string()};
         std::cout << "Initialised tile: \"" << tileName << "\"" << std::endl;
         tiles.emplace(tileName, tile);
     }
 }
 
-Tile TileManager::initialiseTile(std::string& path){
+Tile TileManager::initialiseTile(const std::string& path){
+    const TileJson json = parseTileJson(fullPath + path);
     Tile tile;
-    std::ifstream modelFileData(fullPath + path);
-    nlohmann::json modelFile = nlohmann::json::parse(modelFileData);
-
-    if (!modelFile["animation"].empty()){
+    if (!json.animationFile.empty()){
         tile.setAnimated();
-        auto* anims = AnimationManager::loadAnimationFile(modelFile["animation"]);
-        tile.addAnimations(anims);
+        const auto* animations{AnimationManager::loadAnimationFile(json.animationFile)};
+        tile.addAnimations(animations);
         tile.playAnimation("idleTile");
         tile.setFrameDurationScale(0.15f);
     }
-    if (modelFile["textures"].empty()){
-        throw std::runtime_error("Model \"" + path + "\" has no textures!");
-    }
-    for (const auto& texture : modelFile["textures"]){
-        std::string textureName = texture.get<std::string>();
-        if (TextureManager::isTexture(textureName)){
-            tile.addTexture(TextureManager::loadTexture(textureName));
+    for (const auto& texture : json.textures){
+        if (TextureManager::isTexture(texture)){
+            tile.addTexture(TextureManager::loadTexture(texture));
         }
         else{
-            throw std::runtime_error("Texture \"" + textureName + "\" not found!");
+            throw std::runtime_error("Texture \"" + texture + "\" not found!");
         }
     }
 
@@ -58,14 +52,31 @@ Tile TileManager::initialiseTile(std::string& path){
     return tile;
 }
 
+TileJson TileManager::parseTileJson(const std::string& filePath){
+    std::ifstream modelFileData(filePath);
+    nlohmann::json modelFile(nlohmann::json::parse(modelFileData));
+
+    TileJson tile;
+
+    if (!modelFile["animationFile"].empty()){
+        tile.animationFile = modelFile["animationFile"].get<std::string>();
+    }
+
+    if (modelFile["textureFiles"].empty()){
+        throw std::runtime_error("No textures referenced by tile!");
+    }
+    tile.textures = modelFile["textureFiles"].get<std::vector<std::string>>();
+
+    return tile;
+
+
+}
+
 bool TileManager::isTile(const std::string& name){
     if (!isInitialised()){
         throw std::runtime_error("No tiles initialised!");
     }
-    if (!tiles.contains(name)){
-        return false;
-    }
-    return true;
+    return tiles.contains(name);
 }
 
 Tile* TileManager::loadTile(const std::string& name){
@@ -77,8 +88,5 @@ Tile* TileManager::loadTile(const std::string& name){
 }
 
 bool TileManager::isInitialised(){
-    if (tiles.empty()){
-        return false;
-    }
-    return true;
+    return ManagerUtilities::isInitialised(tiles);
 }

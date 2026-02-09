@@ -10,16 +10,24 @@
 
 #include "Tile.h"
 
+struct TileJson{
+    std::string animationFile;
+    std::vector<std::string> textures;
+};
+
 class TileManager{
 public:
     TileManager() = default;
     ~TileManager() = default;
 
     static void initialiseTiles();
-    static Tile initialiseTile(std::string& path);
+    static TileJson parseTileJson(const std::string& filePath);
+    static Tile initialiseTile(const std::string& path);
+    static Tile* loadTile(const std::string& name);
+    // Validators
     static bool isTile(const std::string& name);
     static bool isInitialised();
-    static Tile* loadTile(const std::string& name);
+
 
 private:
     static std::map<std::string, Tile> tiles;

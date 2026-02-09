@@ -28,10 +28,11 @@ bool TextureManager::isTexture(const std::string& name){
     if (!isInitialised()){
         throw std::runtime_error("No textures initialised!");
     }
-    if (!textures.contains(name)){
-        return false;
-    }
-    return true;
+    return textures.contains(name);
+}
+
+bool TextureManager::isInitialised(){
+    return ManagerUtilities::isInitialised(textures);
 }
 
 sf::Texture& TextureManager::loadTexture(const std::string& name){
@@ -40,9 +41,4 @@ sf::Texture& TextureManager::loadTexture(const std::string& name){
     }
     std::cout << "Loaded texture: \"" << name << "\"" << std::endl;
     return textures.at(name);
-}
-
-bool TextureManager::isInitialised(){
-    return ManagerUtilities::isInitialised(textures);
-    //return !textures.empty();
 }

@@ -46,7 +46,6 @@ Level LevelManager::loadLevel(const std::string& name){
     sf::Vector2f playerStartPosition = {playerData["pos"][0], playerData["pos"][1]};;
     level.playerStartPosition = {playerStartPosition.x * 16.f, playerStartPosition.y * 16.f};
 
-
     for (const auto& tileData : file["tileData"]){
         sf::Vector2f gridPosition({tileData["pos"][0], tileData["pos"][1]});
         sf::Vector2f repeatSize({tileData["size"][0], tileData["size"][1]});
@@ -75,18 +74,12 @@ Level LevelManager::loadLevel(const std::string& name){
 }
 
 bool LevelManager::isInitialised(){
-    if (levels.empty()){
-        return false;
-    }
-    return true;
+    return ManagerUtilities::isInitialised(levels);
 }
 
 bool LevelManager::isLevel(const std::string& name){
     if (!isInitialised()){
         throw std::runtime_error("No levels initialised!");
     }
-    if (std::ranges::count(levels, name) == 0){
-        return false;
-    }
-    return true;
+    return std::ranges::find(levels, name) != levels.end();
 }

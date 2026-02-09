@@ -1,6 +1,6 @@
 {
-  "animation": "anim_questionblock.json",
-  "textures": [
+  "animationFile": "anim_questionblock.json",
+  "textureFiles": [
     "tiles/questionblock.png"
   ]
 }
