@@ -3,15 +3,15 @@
 #include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
 
-#include "constants.h"
 #include "GameManager.h"
-#include "InputManager.h"
+#include "Globals.h"
 
 using json = nlohmann::json;
 
 int main(){
+    auto screenDimensions = Globals::getScreenDimensions();
     sf::RenderWindow window(sf::VideoMode({600,600}), "Super Mario Bros.");
-    sf::View view(sf::Vector2f {SCREEN_WIDTH/2,SCREEN_HEIGHT/2}, sf::Vector2f{SCREEN_WIDTH,SCREEN_HEIGHT});
+    sf::View view(sf::Vector2f {screenDimensions.x/2,screenDimensions.y/2}, screenDimensions);
 
     GameManager::setWindow(window);
     GameManager::initialiseGame("assets/");

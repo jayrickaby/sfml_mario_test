@@ -4,18 +4,20 @@
 
 #include "Animation.h"
 
+#include "Globals.h"
+
 Animation::Animation(const std::string& givenName):
 name(givenName)
 {}
 
-void Animation::update(float deltaTime) {
+void Animation::update() {
     if (!isAnimated()) {
         frameTimer = 0.f;
         currentIndex = 0;
         return;
     }
 
-    frameTimer += deltaTime;
+    frameTimer += Globals::getDeltaTime();
     const Frame& currentFrame = frames[currentIndex];
 
     if (frameTimer >= currentFrame.duration * frameDurationScale) {

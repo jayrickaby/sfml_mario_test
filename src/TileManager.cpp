@@ -68,8 +68,6 @@ TileJson TileManager::parseTileJson(const std::string& filePath){
     tile.textures = modelFile["textureFiles"].get<std::vector<std::string>>();
 
     return tile;
-
-
 }
 
 bool TileManager::isTile(const std::string& name){

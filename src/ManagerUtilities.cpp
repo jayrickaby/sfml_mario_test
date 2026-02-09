@@ -11,14 +11,13 @@
 #include "AnimationManager.h"
 
 std::vector<std::string> ManagerUtilities::findFiles(const std::string& path, const std::vector<std::string>& extensions){
-    std::vector<std::string> files;
-
     std::cout << "Looking in: \"" << path << "\"" << std::endl;
     if (!std::filesystem::is_directory(path)){
         throw std::runtime_error("Could not find directory: \"" + path + "\"");
     }
     const std::filesystem::path directory{path};
 
+    std::vector<std::string> files;
     for (auto const& dirEntry : std::filesystem::recursive_directory_iterator{directory}){
 
         std::string relativeFilePath = std::filesystem::relative(dirEntry, path).string();

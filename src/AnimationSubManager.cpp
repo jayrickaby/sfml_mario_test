@@ -9,15 +9,14 @@ void AnimationSubManager::playAnimation(const std::string& name){
         return;
     }
 
-    if (animations.contains(name)) {
-        if (!currentAnimationName.empty()){
-            animations.at(currentAnimationName).reset();
-        }
-        currentAnimationName = name;
-    }
-    else {
+    if (!animations.contains(name)) {
         throw std::runtime_error("Animation \"" + name + "\" doesn't exist!");
     }
+
+    if (!currentAnimationName.empty()){
+        animations.at(currentAnimationName).reset();
+    }
+    currentAnimationName = name;
 }
 
 void AnimationSubManager::loadAnimations(const std::map<std::string, Animation> *givenAnimations){

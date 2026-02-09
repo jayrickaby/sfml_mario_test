@@ -16,9 +16,9 @@ std::string TextureManager::fullPath = "";
 void TextureManager::initialiseTextures(){
     fullPath = GameManager::getAssetPath() + "textures/";
 
-    std::vector files(ManagerUtilities::findFiles(fullPath, {".png"}));
+    const std::vector files(ManagerUtilities::findFiles(fullPath, {".png"}));
 
-    for (std::string& file : files){
+    for (const auto& file : files){
         textures.emplace(file, sf::Texture(fullPath + file));
         std::cout << "Initialised texture: " << (file) << std::endl;
     }

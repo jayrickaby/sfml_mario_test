@@ -12,10 +12,10 @@ Tile::Tile():
 sprite(TextureManager::loadTexture("tiles/missing.png"))
 {}
 
-void Tile::update(float deltaTime){
+void Tile::update(){
     auto* anim = animationSubManager->getCurrentAnimation();
     sprite.setTextureRect(anim->getFrameRect());
-    anim->update(deltaTime);
+    anim->update();
 }
 
 void Tile::draw(sf::RenderTarget& target) const{

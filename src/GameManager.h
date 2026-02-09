@@ -11,8 +11,6 @@
 #include "LevelManager.h"
 #include "Player.h"
 
-
-
 class GameManager{
 public:
     GameManager() = default;
@@ -29,7 +27,6 @@ public:
     static std::string getAssetPath() { return assetPath; }
 
 private:
-    static sf::Clock clock;
     static Player player;
     static Level level;
 

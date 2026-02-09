@@ -17,10 +17,10 @@ std::string AnimationManager::fullPath = "";
 void AnimationManager::initialiseAnimations(){
     fullPath = GameManager::getAssetPath() + "animations/";
 
-    std::vector files(ManagerUtilities::findFiles(fullPath, {".json"}));
+    const std::vector files(ManagerUtilities::findFiles(fullPath, {".json"}));
 
-    for (std::string& file : files){
-        std::map animationsList{parseAnimations(file)};
+    for (const auto& file : files){
+        const std::map animationsList{parseAnimations(file)};
         animations.emplace(file, animationsList);
         std::cout << "Initialised animation: \"" << file << "\"" << std::endl;
     }
@@ -52,6 +52,7 @@ Frame AnimationManager::parseFrame(const nlohmann::basic_json<>& frameData){
     if (frameData["size"].empty()){
         throw std::runtime_error("Frame has no size defined!");
     }
+
     const sf::Vector2i frameSize({frameData["size"][0], frameData["size"][1]});
 
     frame.rect = sf::IntRect(framePos, frameSize);

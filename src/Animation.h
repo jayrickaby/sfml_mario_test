@@ -14,7 +14,7 @@ struct Frame {
 class Animation {
 public:
     Animation(const std::string& givenName);
-    void update(float deltaTime);
+    void update();
 
     // Verifiers
     bool isAnimated() const;

@@ -7,11 +7,11 @@
 #include <iostream>
 
 #include "AnimationManager.h"
+#include "Globals.h"
 #include "InputManager.h"
 #include "TextureManager.h"
 #include "TileManager.h"
 
-sf::Clock GameManager::clock;
 Player GameManager::player;
 Level GameManager::level;
 sf::RenderWindow* GameManager::window;
@@ -68,12 +68,12 @@ void GameManager::updateGame(){
     checkForEvents();
     handleInput();
 
-    float deltaTime = clock.restart().asSeconds();
-    player.update(deltaTime);
+    Globals::updateDeltaTime();
+    player.update();
 
-    for (Tile& tile : level.tiles){
+    for (auto& tile : level.tiles){
         if (tile.isAnimated()){
-            tile.update(deltaTime);
+            tile.update();
         }
     }
 
@@ -96,8 +96,8 @@ void GameManager::checkForCollisions(){
     for (auto& collisionBox : level.levelCollisions){
         auto intersection = collisionBox.findIntersection(player.getBoundingBox());
         if (intersection.has_value()){
-            sf::FloatRect overlap = intersection.value();
-            CollisionSide side = getCollisionSide(player.getBoundingBox(), collisionBox);
+            const sf::FloatRect overlap = intersection.value();
+            const CollisionSide side = getCollisionSide(player.getBoundingBox(), collisionBox);
             // @TODO USE SWEEPING AABB TO REMOVE TUNNELLING
             player.collide(side, overlap);
         }
@@ -114,11 +114,11 @@ void GameManager::drawGame(sf::RenderTarget& target){
 }
 
 CollisionSide GameManager::getCollisionSide(const sf::FloatRect& a, const sf::FloatRect& b){
-    auto intersection = a.findIntersection(b);
+    const auto intersection = a.findIntersection(b);
     if (!intersection.has_value()){
         return None;
     }
-    sf::FloatRect overlap = intersection.value();
+    const auto overlap = intersection.value();
 
     if (overlap.size.y > overlap.size.x){
         if (overlap.position.x + overlap.size.x < b.getCenter().x){

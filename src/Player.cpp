@@ -9,8 +9,8 @@
 #include <random>
 
 #include "AnimationManager.h"
-#include "constants.h"
 #include "GameManager.h"
+#include "Globals.h"
 #include "InputManager.h"
 #include "TextureManager.h"
 #include "Tile.h"
@@ -49,23 +49,23 @@ sf::Vector2f Player::getPosition() const{
     return position;
 }
 
-void Player::move(float deltaTime){
-    moveX(deltaTime);
-    moveY(deltaTime);
+void Player::move(){
+    moveX();
+    moveY();
 }
 
-void Player::moveX(float deltaTime){
-    velocity.x += walkAcceleration * deltaTime * direction;
+void Player::moveX(){
+    velocity.x += walkAcceleration * Globals::getDeltaTime() * direction;
 
     if (direction == 0){
-        velocity.x *= std::exp(-dampening * deltaTime);
+        velocity.x *= std::exp(-dampening * Globals::getDeltaTime());
         if (velocity.x < 1.f && velocity.x > -1.f){
             velocity.x = 0.f;
         }
     }
 
     velocity.x = std::clamp(velocity.x, -walkSpeed, walkSpeed);
-    position.x += velocity.x * deltaTime;
+    position.x += velocity.x * Globals::getDeltaTime();
 
     constexpr float skidThresh = 90.f;
     if ((velocity.x >= skidThresh && direction == -1) || (velocity.x <= -skidThresh && direction == 1)){
@@ -80,22 +80,22 @@ void Player::moveX(float deltaTime){
     }
 }
 
-void Player::moveY(float deltaTime){
-    velocity.y += gravity * deltaTime;
-    position.y += velocity.y * deltaTime;
+void Player::moveY(){
+    velocity.y += gravity * Globals::getDeltaTime();
+    position.y += velocity.y * Globals::getDeltaTime();
 }
 
-void Player::update(float deltaTime) {
+void Player::update() {
     if (!sprite){
         throw std::runtime_error("Player object uninitialised!");
     }
     onGround = false;
-    move(deltaTime);
-    updateAnimation(deltaTime);
+    move();
+    updateAnimation();
     physicsBox.position = position;
 }
 
-void Player::updateAnimation(float deltaTime){
+void Player::updateAnimation(){
     if (isJumping){
         animationSubManager.playAnimation("jump");
     }
@@ -113,7 +113,7 @@ void Player::updateAnimation(float deltaTime){
 
     // Offsets the animationScale a little so that it looks better
     constexpr float animationScaleOffset = 0.4f;
-    float animationScale = (1.f - (absVelocityX / walkSpeed)) + animationScaleOffset;
+    const float animationScale = (1.f - (absVelocityX / walkSpeed)) + animationScaleOffset;
 
     Animation* currentAnimation = animationSubManager.getCurrentAnimation();
 
@@ -128,7 +128,7 @@ void Player::updateAnimation(float deltaTime){
         sprite->setPosition(physicsBox.position + sprite->getOrigin());
         sprite->setTextureRect(currentAnimation->getFrameRect());
         currentAnimation->setFrameDurationScale(14.f * animationScale / 60.f);
-        currentAnimation->update(deltaTime);
+        currentAnimation->update();
     }
 }
 
@@ -162,8 +162,8 @@ void Player::collideY(const CollisionSide side, const sf::FloatRect overlap){
 }
 
 void Player::handleInput() {
-    bool left = InputManager::isKeyPressed(sf::Keyboard::Key::A);
-    bool right = InputManager::isKeyPressed(sf::Keyboard::Key::D);
+    const bool left = InputManager::isKeyPressed(sf::Keyboard::Key::A);
+    const bool right = InputManager::isKeyPressed(sf::Keyboard::Key::D);
 
     if (InputManager::isLastKeyPressed(sf::Keyboard::Key::A)){
         direction = -1;

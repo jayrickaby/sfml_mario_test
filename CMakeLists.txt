@@ -11,7 +11,6 @@ add_executable(sfml_mario_test src/main.cpp
         src/TextureManager.h
         src/Animation.cpp
         src/Animation.h
-        src/constants.h
         src/AnimationManager.cpp
         src/AnimationManager.h
         src/TileManager.cpp
@@ -30,6 +29,8 @@ add_executable(sfml_mario_test src/main.cpp
         src/AnimationSubManager.h
         src/ManagerUtilities.cpp
         src/ManagerUtilities.h
+        src/Globals.cpp
+        src/Globals.h
 )
 
 find_package(SFML 3.0 COMPONENTS Graphics Audio REQUIRED)

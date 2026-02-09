@@ -16,11 +16,11 @@ class Tile;
 class Player{
 public:
     Player();
-    void update(float deltaTime);
-    void updateAnimation(float deltaTime);
-    void move(float deltaTime);
-    void moveX(float deltaTime);
-    void moveY(float deltaTime);
+    void update();
+    void updateAnimation();
+    void move();
+    void moveX();
+    void moveY();
     void collide(CollisionSide side, sf::FloatRect overlap);
     void collideX(CollisionSide side, sf::FloatRect overlap);
     void collideY(CollisionSide side, sf::FloatRect overlap);

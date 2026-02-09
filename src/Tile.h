@@ -14,7 +14,7 @@ public:
     Tile();
     ~Tile() = default;
 
-    void update(float deltaTime);
+    void update();
     void draw(sf::RenderTarget& target) const;
 
     // Validator

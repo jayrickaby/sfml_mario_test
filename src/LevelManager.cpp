@@ -30,7 +30,7 @@ Level LevelManager::loadLevel(const std::string& name){
         throw std::runtime_error("Could not find level: \"" + name + "\"");
     }
     Level level;
-    std::string path = fullPath + name;
+    const std::string path = fullPath + name;
     std::ifstream levelFileData(path);
     nlohmann::json file = nlohmann::json::parse(levelFileData);
     if (file["backgroundOverride"] == -1){
@@ -43,14 +43,13 @@ Level LevelManager::loadLevel(const std::string& name){
     if (playerData["pos"].empty()){
         throw std::runtime_error("Player position in level not defined!");
     }
-    sf::Vector2f playerStartPosition = {playerData["pos"][0], playerData["pos"][1]};;
+    const sf::Vector2f playerStartPosition = {playerData["pos"][0], playerData["pos"][1]};;
     level.playerStartPosition = {playerStartPosition.x * 16.f, playerStartPosition.y * 16.f};
 
     for (const auto& tileData : file["tileData"]){
-        sf::Vector2f gridPosition({tileData["pos"][0], tileData["pos"][1]});
-        sf::Vector2f repeatSize({tileData["size"][0], tileData["size"][1]});
+        const sf::Vector2f gridPosition({tileData["pos"][0], tileData["pos"][1]});
+        const sf::Vector2f repeatSize({tileData["size"][0], tileData["size"][1]});
 
-        //@TODO: Creates a collision box the size of the block repeat area
         for (int i = 0; i < repeatSize.x; i++){
             for (int j = 0; j < repeatSize.y; j++){
                 sf::Vector2f blockOffset = sf::Vector2f(1*i, 1*j);
