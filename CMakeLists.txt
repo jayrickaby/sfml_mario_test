@@ -39,6 +39,9 @@ find_package(SFML 3.0 COMPONENTS Graphics Audio REQUIRED)
 
 include(FetchContent)
 
+set(SFML_USE_DRM_RENDERING TRUE)
+set(SFML_USE_SYSTEM_DEPS FALSE)
+
 FetchContent_Declare(
         json
         GIT_REPOSITORY https://github.com/nlohmann/json.git
@@ -49,8 +52,15 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/nothings/stb.git
         GIT_TAG master
 )
+FetchContent_Declare(
+        sfml
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        GIT_TAG 3.0.2
+)
+
 FetchContent_MakeAvailable(json)
 FetchContent_MakeAvailable(stb)
+FetchContent_MakeAvailable(sfml)
 
 add_library(stb_interface INTERFACE)
 target_include_directories(stb_interface INTERFACE ${stb_SOURCE_DIR})
