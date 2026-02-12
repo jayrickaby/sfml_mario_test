@@ -35,8 +35,6 @@ add_executable(sfml_mario_test src/main.cpp
         src/Managers/SoundManager.h
 )
 
-find_package(SFML 3.0 COMPONENTS Graphics Audio REQUIRED)
-
 include(FetchContent)
 
 set(SFML_USE_DRM_RENDERING TRUE)

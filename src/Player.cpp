@@ -166,13 +166,13 @@ void Player::collideY(const CollisionSide side, const sf::FloatRect overlap){
 }
 
 void Player::handleInput() {
-    const bool left = InputManager::isKeyPressed(sf::Keyboard::Key::A);
-    const bool right = InputManager::isKeyPressed(sf::Keyboard::Key::D);
+    const bool left = InputManager::isButtonPressed(InputButton::Left);
+    const bool right = InputManager::isButtonPressed(InputButton::Right);
 
-    if (InputManager::isLastKeyPressed(sf::Keyboard::Key::A)){
+    if (InputManager::isLastButtonPressed(InputButton::Left)){
         direction = -1;
     }
-    else if (InputManager::isLastKeyPressed(sf::Keyboard::Key::D)){
+    else if (InputManager::isLastButtonPressed(InputButton::Right)){
         direction = 1;
     }
     else if (left && !right){
@@ -185,7 +185,7 @@ void Player::handleInput() {
         direction = 0;
     }
 
-    if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Space) && onGround && !isJumping){
+    if (InputManager::isButtonPressed(InputButton::A) && onGround && !isJumping){
         onGround = false;
         isJumping = true;
         velocity.y -= jumpStrength;

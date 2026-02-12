@@ -48,6 +48,8 @@ void GameManager::initialiseManagers(){
     TileManager::initialiseTiles();
     LevelManager::initialiseLevels();
     SoundManager::initialiseSoundFiles();
+    //@TODO add check if its unknown, allow it to be changed. default to controller?
+    InputManager::setInputMethod(InputMethod::Controller);
 }
 
 void GameManager::checkForEvents(){
@@ -55,12 +57,38 @@ void GameManager::checkForEvents(){
         if (event->is<sf::Event::Closed>()){
             window->close();
         }
-        else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
-            InputManager::setLastKeyPressed(keyPressed->code);
+        //@TODO branch off into subfunctions? maybe InputManager::checkForKeyboardEvents(); etc
+        auto inputMethod = InputManager::getInputMethod();
+        if (inputMethod == InputMethod::Keyboard) {
+            if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
+                if (InputManager::keysToButtons.contains(keyPressed->code)) {
+                    InputManager::pressButton(InputManager::keysToButtons.at(keyPressed->code));
+                }
+            }
+            else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
+                if (InputManager::keysToButtons.contains(keyReleased->code)) {
+                    InputManager::releaseButton(InputManager::keysToButtons.at(keyReleased->code));
+                }
+            }
         }
-        else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()){
-            if (InputManager::isLastKeyPressed(keyReleased->code)){
-                InputManager::setLastKeyPressed(sf::Keyboard::Key::Unknown);
+        if (inputMethod == InputMethod::Controller) {
+            if (const auto* buttonPressed = event->getIf<sf::Event::JoystickButtonPressed>()){
+                if (InputManager::joystickButtonToButtons.contains(buttonPressed->button)) {
+                    InputManager::pressButton(InputManager::joystickButtonToButtons.at(buttonPressed->button));
+                }
+            }
+            else if (const auto* buttonReleased = event->getIf<sf::Event::JoystickButtonReleased>()) {
+                if (InputManager::joystickButtonToButtons.contains(buttonReleased->button)) {
+                    InputManager::releaseButton(InputManager::joystickButtonToButtons.at(buttonReleased->button));
+                }
+            }
+            if (const auto* axisPressed = event->getIf<sf::Event::JoystickMoved>()) {
+                if (axisPressed->axis == sf::Joystick::Axis::X) {
+                    InputManager::moveAxes(axisPressed->position, 0.f);
+                }
+                if (axisPressed->axis == sf::Joystick::Axis::Y) {
+                    std::cout << "Y: " << axisPressed->position << std::endl;
+                }
             }
         }
     }
@@ -84,10 +112,10 @@ void GameManager::updateGame(){
 }
 
 void GameManager::handleInput(){
-    if (InputManager::isLastKeyPressed(sf::Keyboard::Key::Escape)){
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)){
         window->close();
     }
-    else if (InputManager::isKeyPressed(sf::Keyboard::Key::F3) && InputManager::isLastKeyPressed(sf::Keyboard::Key::A)){
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F3) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)){
         std::cout << "Reloading assets..." << std::endl;
         initialiseGame();
     }
