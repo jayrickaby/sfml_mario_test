@@ -12,7 +12,7 @@
 
 
 std::map<std::string, sf::SoundBuffer> SoundManager::bufferedSounds;
-std::vector<sf::Sound> SoundManager::sounds;
+std::vector<std::unique_ptr<sf::Sound>> SoundManager::sounds;
 std::string SoundManager::fullPath;
 
 bool SoundManager::isSoundFile(const std::string& name){
@@ -24,7 +24,11 @@ bool SoundManager::isSoundFile(const std::string& name){
 
 void SoundManager::clearStoppedSounds(){
     std::erase_if(sounds,
-                  [](const sf::Sound& sound){return sound.getStatus() == sf::Sound::Status::Stopped;});
+        [](const auto& sound) {
+            return sound->getStatus() == sf::Sound::Status::Stopped;
+        }
+    );
+
 }
 
 void SoundManager::initialiseSoundFiles(){
@@ -47,6 +51,7 @@ void SoundManager::playSoundFile(const std::string& name){
         throw std::runtime_error("Could not find sound: \"" + name + "\"");
     }
     std::cout << "Playing sound: \"" << name << "\"" << std::endl;
-    sounds.emplace_back(bufferedSounds.at(name));
-    sounds.back().play();
+    auto sound = std::make_unique<sf::Sound>(bufferedSounds.at(name));
+    sound->play();
+    sounds.emplace_back(std::move(sound));
 }

@@ -23,7 +23,7 @@ public:
 
 private:
     static std::map<std::string, sf::SoundBuffer> bufferedSounds;
-    static std::vector<sf::Sound> sounds;
+    static std::vector<std::unique_ptr<sf::Sound>> sounds;
     static std::string fullPath;
 };
 
