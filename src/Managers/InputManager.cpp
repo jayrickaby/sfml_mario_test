@@ -23,8 +23,14 @@ std::map<int, InputButton> InputManager::joystickButtonToButtons = {
     {0, InputButton::A}
 };
 
-std::map<sf::Joystick::Axis, InputButton> joystickAxisToButtons = {
-};
+void InputManager::initialiseInput() {
+    if (sf::Joystick::isConnected(0)) {
+        setInputMethod(InputMethod::Controller);
+    }
+    else {
+        setInputMethod(InputMethod::Keyboard);
+    }
+}
 
 InputButton InputManager::getLastButtonPressed(){
     return lastButtonPressed;

@@ -48,8 +48,7 @@ void GameManager::initialiseManagers(){
     TileManager::initialiseTiles();
     LevelManager::initialiseLevels();
     SoundManager::initialiseSoundFiles();
-    //@TODO add check if its unknown, allow it to be changed. default to controller?
-    InputManager::setInputMethod(InputMethod::Controller);
+    InputManager::initialiseInput();
 }
 
 void GameManager::checkForEvents(){

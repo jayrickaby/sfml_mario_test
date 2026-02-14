@@ -29,10 +29,10 @@ class InputManager{
 public:
     InputManager() = default;
     ~InputManager() = default;
+    static void initialiseInput();
 
     static std::map<sf::Keyboard::Key, InputButton> keysToButtons;
     static std::map<int, InputButton> joystickButtonToButtons;
-    static std::map<sf::Joystick::Axis, InputButton> joystickAxisToButtons;
 
     // Validators
     static bool isLastButtonPressed(const InputButton& button);
