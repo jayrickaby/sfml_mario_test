@@ -1,0 +1,15 @@
+levelData:
+    - theme
+    - areatype
+
+playerData:
+    - startPos
+
+tileData:
+    - tile stuff
+
+
+
+
+backgroundOverride:
+ONLY ADD WHEN AREATYPES ARE ADDED

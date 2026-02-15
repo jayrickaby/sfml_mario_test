@@ -30,11 +30,11 @@ void Tile::addTexture(const sf::Texture& texture){
     textures.emplace_back(&texture);
 }
 
-void Tile::setPosition(const sf::Vector2f& position){
-    sprite.setPosition(position);
+void Tile::setPosition(const sf::Vector2i& position){
+    sprite.setPosition(sf::Vector2f(position));
 }
 
-void Tile::setTextureIndex(const int index){
+void Tile::setTextureIndex(const int& index){
     sprite.setTexture(*textures[index]);
 }
 

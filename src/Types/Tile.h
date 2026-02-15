@@ -30,8 +30,8 @@ public:
     void playAnimation(const std::string& name);
     void setAnimated();
     void setFrameDurationScale(const float& scale);
-    void setPosition(const sf::Vector2f& position);
-    void setTextureIndex(int index);
+    void setPosition(const sf::Vector2i& position);
+    void setTextureIndex(const int& index);
 private:
     std::vector<const sf::Texture*> textures = {};
     sf::Sprite sprite;

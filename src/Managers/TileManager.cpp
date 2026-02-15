@@ -30,12 +30,13 @@ void TileManager::initialiseTiles(){
 }
 
 Tile TileManager::initialiseTile(const std::string& path){
-    const TileJson json = parseTileJson(fullPath + path);
+    const TileJson json = parseTile(fullPath + path);
     Tile tile;
     if (!json.animationFile.empty()){
         tile.setAnimated();
         const auto* animations{AnimationManager::loadAnimationFile(json.animationFile)};
         tile.addAnimations(animations);
+        // @TODO default animation implementation
         tile.playAnimation("idleTile");
         tile.setFrameDurationScale(0.15f);
     }
@@ -52,7 +53,7 @@ Tile TileManager::initialiseTile(const std::string& path){
     return tile;
 }
 
-TileJson TileManager::parseTileJson(const std::string& filePath){
+TileJson TileManager::parseTile(const std::string& filePath){
     std::ifstream modelFileData(filePath);
     nlohmann::json modelFile(nlohmann::json::parse(modelFileData));
 

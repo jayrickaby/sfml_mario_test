@@ -1,42 +1,40 @@
 {
-  "backgroundOverride": -1,
-  "globalSkinIndex": 0,
   "playerData": {
-    "pos": [2,2]
+    "startPos": [2,2]
   },
-  "tileData": [
+  "levelData": [
     {
-      "tile": "ground",
+      "name": "ground",
       "pos": [0,14],
       "size": [16,2],
       "skinOverride": -1
     },
     {
-      "tile": "brick",
+      "name": "brick",
       "pos": [5,10],
       "size": [1,1],
       "skinOverride": -1
     },
     {
-      "tile": "questionblock",
+      "name": "questionblock",
       "pos": [6,10],
       "size": [1,1],
       "skinOverride": -1
     },
     {
-      "tile": "brick",
+      "name": "brick",
       "pos": [7,10],
       "size": [1,1],
       "skinOverride": -1
     },
     {
-      "tile": "questionblock",
+      "name": "questionblock",
       "pos": [8,10],
       "size": [1,1],
       "skinOverride": -1
     },
     {
-      "tile": "brick",
+      "name": "brick",
       "pos": [9,10],
       "size": [1,1],
       "skinOverride": -1

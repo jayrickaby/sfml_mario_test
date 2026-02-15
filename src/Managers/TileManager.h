@@ -21,7 +21,7 @@ public:
     ~TileManager() = default;
 
     static void initialiseTiles();
-    static TileJson parseTileJson(const std::string& filePath);
+    static TileJson parseTile(const std::string& filePath);
     static Tile initialiseTile(const std::string& path);
     static Tile* loadTile(const std::string& name);
     // Validators

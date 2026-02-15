@@ -27,6 +27,7 @@ public:
     static std::string getAssetPath() { return assetPath; }
 
 private:
+    static std::vector<sf::RectangleShape> debugHitboxes;
     static Player player;
     static Level level;
 

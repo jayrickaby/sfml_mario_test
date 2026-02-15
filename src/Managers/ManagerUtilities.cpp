@@ -40,3 +40,36 @@ std::vector<std::string> ManagerUtilities::findFiles(const std::string& path, co
     }
     return files;
 }
+
+std::string ManagerUtilities::getStringFromJson(const nlohmann::basic_json<>& data) {
+    if (data.size() != 1) {
+        std::string msg = "Data does not contain 1 element!\nSize: " + std::to_string(data.size()) + "\n";
+        throw std::runtime_error(msg);
+    }
+    std::string string = data.get<std::string>();
+    return string;
+}
+
+sf::Vector2f ManagerUtilities::getVector2fFromJson(const nlohmann::json& data) {
+    if (data.size() != 2) {
+        std::string msg = "Data does not contain 2 elements!\nSize: " + std::to_string(data.size()) + "\n";
+        throw std::runtime_error(msg);
+    }
+
+    sf::Vector2f vector;
+    vector.x = data[0].get<float>();
+    vector.y = data[1].get<float>();
+    return vector;
+}
+
+sf::Vector2i ManagerUtilities::getVector2iFromJson(const nlohmann::json& data) {
+    if (data.size() != 2) {
+        std::string msg = "Data does not contain 2 elements!\nSize: " + std::to_string(data.size()) + "\n";
+        throw std::runtime_error(msg);
+    }
+
+    sf::Vector2i vector;
+    vector.x = data[0].get<float>();
+    vector.y = data[1].get<float>();
+    return vector;
+}

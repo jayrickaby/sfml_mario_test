@@ -145,24 +145,24 @@ void Player::collide(const CollisionSide side, const sf::FloatRect overlap){
 }
 
 void Player::collideX(const CollisionSide side, const sf::FloatRect overlap){
-    if (side == Left){
+    if (side == Right){
         velocity.x = 0;
         position.x -= overlap.size.x;
     }
-    else if (side == Right){
+    else if (side == Left){
         velocity.x = 0;
         position.x += overlap.size.x;
     }
 }
 
 void Player::collideY(const CollisionSide side, const sf::FloatRect overlap){
-    if (side == Top){
+    if (side == Bottom){
         velocity.y = 0;
         position.y -= overlap.size.y;
         isJumping = false;
         onGround = true;
     }
-    else if (side == Bottom){
+    else if (side == Top){
         velocity.y = 0;
         position.y += overlap.size.y;
     }

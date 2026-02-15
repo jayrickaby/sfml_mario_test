@@ -17,6 +17,7 @@ Player GameManager::player;
 Level GameManager::level;
 sf::RenderWindow* GameManager::window;
 std::string GameManager::assetPath;
+std::vector<sf::RectangleShape> GameManager::debugHitboxes;
 
 void GameManager::setWindow(sf::RenderWindow& targetWindow){
     window = &targetWindow;
@@ -108,6 +109,23 @@ void GameManager::updateGame(){
     }
 
     checkForCollisions();
+
+    std::vector<sf::RectangleShape> vector;
+    sf::RectangleShape rect(player.getBoundingBox().size);
+    rect.setPosition(player.getPosition());
+    rect.setFillColor(sf::Color::White);
+    vector.emplace_back(rect);
+
+    for (const auto& box : level.levelCollisions) {
+        sf::RectangleShape rectangle_shape(sf::Vector2f(box.size));
+        rectangle_shape.setPosition(sf::Vector2f(box.position));
+        rectangle_shape.setFillColor(sf::Color::Red);
+        rectangle_shape.setOutlineColor(sf::Color::Black);
+        rectangle_shape.setOutlineThickness(1);
+        vector.emplace_back(rectangle_shape);
+    }
+
+    debugHitboxes = vector;
 }
 
 void GameManager::handleInput(){
@@ -136,10 +154,15 @@ void GameManager::checkForCollisions(){
 
 void GameManager::drawGame(sf::RenderTarget& target){
     target.clear(level.backgroundColour);
+
     player.draw(target);
 
     for (const auto& tile : level.tiles){
         tile.draw(target);
+    }
+
+    for (const auto& hitbox : debugHitboxes) {
+        //window->draw(hitbox);
     }
 }
 
@@ -152,18 +175,18 @@ CollisionSide GameManager::getCollisionSide(const sf::FloatRect& a, const sf::Fl
 
     if (overlap.size.y > overlap.size.x){
         if (overlap.position.x + overlap.size.x < b.getCenter().x){
-            return Left;
+            return Right;
         }
         if (overlap.position.x + overlap.size.x > b.getCenter().x){
-            return Right;
+            return Left;
         }
     }
     else if (overlap.size.x > overlap.size.y){
         if (overlap.position.y + overlap.size.y < b.getCenter().y){
-            return Top;
+            return Bottom;
         }
         if (overlap.position.y + overlap.size.y > b.getCenter().y){
-            return Bottom;
+            return Top;
         }
     }
     return None;
