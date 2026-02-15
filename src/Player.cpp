@@ -57,6 +57,9 @@ void Player::move(){
 
 void Player::moveX(){
     velocity.x += walkAcceleration * Globals::getDeltaTime() * direction;
+    if (isSkidding) {
+        velocity.x += 50.f * Globals::getDeltaTime() * direction;
+    }
 
     if (direction == 0){
         velocity.x *= std::exp(-dampening * Globals::getDeltaTime());
