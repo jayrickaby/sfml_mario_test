@@ -33,7 +33,9 @@ Level LevelManager::loadLevel(const std::string& name){
     LevelJson json = parseLevel(fullPath + name);
 
     for (const auto& tileData : json.levelData.tiles) {
-        level.levelCollisions.emplace_back(getTileCollision(tileData));
+        if (TileManager::loadTile(tileData.name)->isSolid()) {
+            level.levelCollisions.emplace_back(getTileCollision(tileData));
+        }
         for (const auto& t : getTiles(tileData)) {
             level.tiles.emplace_back(t);
         }

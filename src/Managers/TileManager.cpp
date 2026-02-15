@@ -48,6 +48,12 @@ Tile TileManager::initialiseTile(const std::string& path){
             throw std::runtime_error("Texture \"" + texture + "\" not found!");
         }
     }
+    if (json.properties.isBreakable) {
+        tile.setBreakable();
+    }
+    if (json.properties.isSolid) {
+        tile.setSolid();
+    }
 
     tile.setTextureIndex(0);
     return tile;
@@ -62,6 +68,10 @@ TileJson TileManager::parseTile(const std::string& filePath){
     if (!modelFile["animationFile"].empty()){
         tile.animationFile = modelFile["animationFile"].get<std::string>();
     }
+    if (modelFile["properties"].empty()) {
+        throw std::runtime_error("Tile has no properties!");
+    }
+    tile.properties = parseTileProperties(modelFile["properties"]);
 
     if (modelFile["textureFiles"].empty()){
         throw std::runtime_error("No textures referenced by tile!");
@@ -69,6 +79,24 @@ TileJson TileManager::parseTile(const std::string& filePath){
     tile.textures = modelFile["textureFiles"].get<std::vector<std::string>>();
 
     return tile;
+}
+
+TileProperties TileManager::parseTileProperties(const nlohmann::basic_json<>& properties) {
+    TileProperties tileProperties{};
+
+    if (properties["isBreakable"].empty()) {
+        throw std::runtime_error("Tile has no breakable property!");
+    }
+    tileProperties.isBreakable = properties["isBreakable"].get<bool>();
+
+    std::cout << tileProperties.isBreakable << std::endl;
+
+    if (properties["isSolid"].empty()) {
+        throw std::runtime_error("Tile has no solid property!");
+    }
+    tileProperties.isSolid = properties["isSolid"].get<bool>();
+
+    return tileProperties;
 }
 
 bool TileManager::isTile(const std::string& name){

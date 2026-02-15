@@ -57,3 +57,19 @@ void Tile::playAnimation(const std::string& name){
 void Tile::setFrameDurationScale(const float& scale){
     animationSubManager->getCurrentAnimation()->setFrameDurationScale(scale);
 }
+
+void Tile::setBreakable() {
+    properties.isBreakable = true;
+}
+
+void Tile::setSolid() {
+    properties.isSolid = true;
+}
+
+bool Tile::isBreakable() const {
+    return properties.isBreakable;
+}
+
+bool Tile::isSolid() const {
+    return properties.isSolid;
+}

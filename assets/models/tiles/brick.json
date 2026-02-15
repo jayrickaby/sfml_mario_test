@@ -1,4 +1,8 @@
 {
+  "properties": {
+    "isSolid": false,
+    "isBreakable": true
+  },
   "textureFiles": [
     "tiles/brick.png",
     "tiles/brick_ug.png"

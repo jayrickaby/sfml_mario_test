@@ -9,6 +9,11 @@
 #include "Animation.h"
 #include "../Managers/AnimationSubManager.h"
 
+struct TileProperties {
+    bool isSolid;
+    bool isBreakable;
+};
+
 class Tile{
 public:
     Tile();
@@ -16,9 +21,12 @@ public:
 
     void update();
     void draw(sf::RenderTarget& target) const;
+    void playAnimation(const std::string& name);
 
     // Validator
     bool isAnimated() const;
+    bool isBreakable() const;
+    bool isSolid() const;
 
     // Getters
     sf::FloatRect getBoundingBox() const;
@@ -26,8 +34,8 @@ public:
     // Setters
     void addAnimations(const std::map<std::string, Animation>* animations);
     void addTexture(const sf::Texture& texture);
-
-    void playAnimation(const std::string& name);
+    void setSolid();
+    void setBreakable();
     void setAnimated();
     void setFrameDurationScale(const float& scale);
     void setPosition(const sf::Vector2i& position);
@@ -36,5 +44,6 @@ private:
     std::vector<const sf::Texture*> textures = {};
     sf::Sprite sprite;
     std::optional<AnimationSubManager> animationSubManager;
+    TileProperties properties;
 };
 #endif //SFML_MARIO_TEST_TILE_H
