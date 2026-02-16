@@ -1,10 +1,10 @@
-#include <fstream>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
 
-#include "Managers/GameManager.h"
 #include "Globals.h"
+#include "Managers/AnimationManager.h"
+#include "Types/AnimationSet.h"
 
 using json = nlohmann::json;
 
@@ -13,13 +13,20 @@ int main(){
     sf::RenderWindow window(sf::VideoMode({600,600}), "Super Mario Bros.");
     sf::View view(sf::Vector2f {screenDimensions.x/2,screenDimensions.y/2}, screenDimensions);
 
-    GameManager::setWindow(window);
-    GameManager::initialiseGame("assets/");
+    AnimationManager::initialise();
+
+    sf::Texture texture("assets/textures/tiles/questionblock.png");
+    sf::Sprite sprite(texture);
+
+    AnimationSet qblock = AnimationManager::getAnimationSet("tiles/questionblock.json");
+    qblock.playAnimation("idle");
 
     while (window.isOpen()){
-        GameManager::updateGame();
         window.setView(view);
-        GameManager::drawGame(window);
+        Globals::updateDeltaTime();
+        qblock.updateAnimation();
+        sprite.setTextureRect(qblock.getCurrentFrame());
+        window.draw(sprite);
         window.display();
     }
 

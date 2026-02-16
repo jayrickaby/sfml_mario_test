@@ -4,28 +4,38 @@
 
 #ifndef SFML_MARIO_TEST_ANIMATIONMANAGER_H
 #define SFML_MARIO_TEST_ANIMATIONMANAGER_H
-
 #include <nlohmann/json.hpp>
+
+#include "../Types/AnimationSet.h"
 #include "../Types/Animation.h"
+#include "../Types/Frame.h"
 
-class Animation;
-
-class AnimationManager{
+class AnimationManager {
 public:
     AnimationManager() = default;
     ~AnimationManager() = default;
 
-    static void initialiseAnimations();
-    static std::map<std::string, Animation>* loadAnimationFile(const std::string& name);
+    static void initialise();
+
+    // Validators
+    static bool isAnimationSet(const std::filesystem::path& path);
+    static bool isInitialised();
+
+    // Getters
+    static AnimationSet getAnimationSet(const std::filesystem::path& path);
 
 private:
-    // e.g.             Player                 Idle     [data]
-    static std::map<std::string, std::map<std::string, Animation>> animations;
-    static std::string fullPath;
+    static AnimationSetJson parseAnimationSetJson(const nlohmann::basic_json<>& data);
+    static AnimationJson parseAnimationJson(const nlohmann::basic_json<>& data);
+    static FrameJson parseFrameJson(const nlohmann::basic_json<>& data);
 
-    static Frame parseFrame(const nlohmann::basic_json<>& frameData);
-    static std::map<std::string, Animation> parseAnimations(const std::string& path);
-    static Animation parseAnimation(const nlohmann::basic_json<>& name);
+    static AnimationSet createAnimationSet(const AnimationSetJson& animationSetJson);
+    static Animation createAnimation(const AnimationJson& animationJson);
+    static Frame createFrame(const FrameJson& frameJson);
+
+    static bool initialised;
+    static std::filesystem::path fullPath;
+    static std::map<std::filesystem::path, AnimationSet> animationSets;
 };
 
 

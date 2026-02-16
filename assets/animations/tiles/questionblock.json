@@ -1,0 +1,23 @@
+{
+  "animations": [
+    {
+      "name":"idle",
+      "speed": 6.66,
+      "frames":[
+        {
+          "pos": [0, 0]
+        },
+        {
+          "pos": [16,0]
+        },
+        {
+          "pos": [32, 0]
+        },
+        {
+          "pos": [48,0]
+        }
+      ]
+    }
+  ],
+  "defaultAnimation": "idle"
+}

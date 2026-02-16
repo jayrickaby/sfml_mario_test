@@ -1,0 +1,37 @@
+Animations Manager -
+- Loads .json files from assets/animations/
+- Parses them into FrameJson, AnimationJson, AnimationSetJson
+- AnimationJsonSet is loaded into Frame, Animation and AnimationSet
+- AnimationSets are stored into array in AnimationManager
+
+FrameJson -
+    Vector2i size;
+    Vector2i pos;
+    float duration;
+
+AnimationJson -
+    string name;
+    vector<FrameJson> frames;
+
+AnimationSetJson -
+    string name;
+    vector<AnimationJson> animations;
+
+
+Frame -
+    sf::IntRect rect;
+    float duration;
+
+Animation -
+    vector<Frame> frames;
+    int frameIndex;
+    float frameTimer;
+    Frame* currentFrame;
+
+AnimationSet -
+    map<string, Animation> animations;
+    string defaultAnimationName;
+    string currentAnimationName;
+    Animation* currentAnimation;
+    float animationSpeed;
+

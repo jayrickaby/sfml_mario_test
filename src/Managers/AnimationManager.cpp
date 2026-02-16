@@ -4,78 +4,179 @@
 
 #include "AnimationManager.h"
 
-#include <fstream>
 #include <iostream>
+#include <fstream>
+#include <spdlog/spdlog.h>
 
-#include "../Types/Animation.h"
-#include "GameManager.h"
 #include "ManagerUtilities.h"
+#include "../Types/AnimationSet.h"
+#include "../Types/Animation.h"
+#include "../Types/Frame.h"
 
-std::map<std::string, std::map<std::string, Animation>> AnimationManager::animations = {};
-std::string AnimationManager::fullPath = "";
+bool AnimationManager::initialised;
+std::filesystem::path AnimationManager::fullPath;
+std::map<std::filesystem::path, AnimationSet> AnimationManager::animationSets;
 
-void AnimationManager::initialiseAnimations(){
-    fullPath = GameManager::getAssetPath() + "animations/";
+void AnimationManager::initialise(){
+    fullPath = std::filesystem::path("assets/animations");
+    spdlog::info("Initialising animations...");
+    const auto& files = ManagerUtilities::getFilesFromPath(fullPath, {".json"});
+    for (const auto& file : files) {
+        spdlog::info("Found file: \"" + file.string() + "\"");
 
-    const std::vector files(ManagerUtilities::findFiles(fullPath, {".json"}));
+        std::ifstream fileContents((fullPath / file).string());
+        if (fileContents.peek() == std::ifstream::traits_type::eof()) {
+            spdlog::critical("File: \"" + file.string() + "\" has no data!");
+            throw std::invalid_argument("Animation file has no data!");
+        }
+        nlohmann::basic_json<> data(nlohmann::json::parse(fileContents));
 
-    for (const auto& file : files){
-        const std::map animationsList{parseAnimations(file)};
-        animations.emplace(file, animationsList);
-        std::cout << "Initialised animation: \"" << file << "\"" << std::endl;
+        animationSets.emplace(file.string(), createAnimationSet(parseAnimationSetJson(data)));
     }
+
+    initialised = true;
 }
 
-std::map<std::string, Animation>* AnimationManager::loadAnimationFile(const std::string& name){
-    if (animations.empty()){
-        throw std::runtime_error("No animations initialised!");
+bool AnimationManager::isAnimationSet(const std::filesystem::path& path) {
+    if (!isInitialised()) {
+        spdlog::error("Tried to check if AnimationSet \"" + path.string() + "\" exists in uninitialised Animation Manager!");
+        throw std::runtime_error("Animation Manager is uninitialised!");
     }
-     if (!animations.contains(name)){
-        throw std::runtime_error("Could not find animation: \"" + name + "\"");
-    }
-    std::cout << "Loaded animation: \"" << name << "\"" << std::endl;
-    return &animations[name];
+    return animationSets.contains(path);
+}
+bool AnimationManager::isInitialised() {
+    return initialised;
 }
 
-Frame AnimationManager::parseFrame(const nlohmann::basic_json<>& frameData){
-    Frame frame;
-
-    if (frameData.empty()){
-        throw std::runtime_error("Frame has no data defined!");
+AnimationSet AnimationManager::getAnimationSet(const std::filesystem::path& path) {
+    if (!isAnimationSet(path)) {
+        spdlog::error("Tried to get AnimationSet \"" + path.string() + "\", but it doesn't exist!");
+        throw std::invalid_argument("AnimationSet doesn't exist!");
     }
-
-    if (frameData["pos"].empty()){
-        throw std::runtime_error("Frame has no position defined!");
-    }
-    const sf::Vector2i framePos({frameData["pos"][0], frameData["pos"][1]});
-
-    if (frameData["size"].empty()){
-        throw std::runtime_error("Frame has no size defined!");
-    }
-
-    const sf::Vector2i frameSize({frameData["size"][0], frameData["size"][1]});
-
-    frame.rect = sf::IntRect(framePos, frameSize);
-    return frame;
-
+    return animationSets[path];
 }
 
-std::map<std::string, Animation> AnimationManager::parseAnimations(const std::string& path){
-    std::ifstream animationFileData(fullPath + path);
-    nlohmann::json file = nlohmann::json::parse(animationFileData);
-    std::map<std::string, Animation> animationsList;
-    for (const auto& animationData : file["animations"]){
-        Animation animation{parseAnimation(animationData)};
-        animationsList.emplace(animationData["name"], animation);
+AnimationSetJson AnimationManager::parseAnimationSetJson(const nlohmann::basic_json<>& data) {
+    if (data.empty()) {
+        spdlog::critical("Animation has no data!");
+        throw std::invalid_argument("Animation file has no data!");
     }
-    return animationsList;
+
+    AnimationSetJson animationSetJson;
+
+    for (const auto& animation : data["animations"]) {
+        AnimationJson animationJson = parseAnimationJson(animation);
+        animationSetJson.animations.emplace_back(animationJson);
+    }
+
+    if (data.contains("defaultAnimation")
+        && data["defaultAnimation"].is_string()
+        && !data["defaultAnimation"].empty()
+        && std::ranges::count(animationSetJson.animations, data["defaultAnimation"].get<std::string>(), &AnimationJson::name) == 1){
+        animationSetJson.defaultAnimation = data["defaultAnimation"].get<std::string>();
+    }
+    else {
+        spdlog::warn("Invalid default animation. Using first in AnimationSet!");
+        animationSetJson.defaultAnimation = animationSetJson.animations.front().name;
+    }
+
+    return animationSetJson;
+}
+AnimationJson AnimationManager::parseAnimationJson(const nlohmann::basic_json<>& data) {
+    if (data.empty()) {
+        spdlog::critical("No animation data!");
+        throw std::invalid_argument("Animation has no data!");
+    }
+
+    AnimationJson animationJson;
+
+    for (const auto& frame : data["frames"]) {
+        FrameJson json = parseFrameJson(frame);
+        animationJson.frames.push_back(json);
+    }
+
+    if (data.contains("name")
+        && data["name"].is_string()
+        && !data["name"].empty()) {
+        animationJson.name = data["name"].get<std::string>();
+    }
+    else {
+        spdlog::critical("Animation has invalid name!");
+        throw std::runtime_error("Animation has invalid name!");
+    }
+
+    if (data.contains("speed")
+        && data["speed"].is_number()) {
+        animationJson.speed = data["speed"].get<float>();
+    }
+    else {
+        spdlog::warn("Invalid animation speed! Using default.");
+    }
+
+    return animationJson;
+}
+FrameJson AnimationManager::parseFrameJson(const nlohmann::basic_json<>& data) {
+    if (data.empty()) {
+        spdlog::critical("No frame data!");
+        throw std::invalid_argument("Frame has no data!");
+    }
+
+    FrameJson frameJson;
+
+    if (data.contains("size")
+        && data["size"].is_array()) {
+        frameJson.size = ManagerUtilities::getVector2iFromJson(data["size"]);
+    }
+    else {
+        spdlog::warn("Invalid frame size! Using default.");
+    }
+
+    if (data.contains("pos")
+        && data["pos"].is_array()) {
+        frameJson.pos = ManagerUtilities::getVector2iFromJson(data["pos"]);
+    }
+    else {
+        spdlog::warn("Invalid frame position! Using default.");
+    }
+    if (data.contains("duration")
+        && data["duration"].is_number()) {
+        frameJson.duration = data["duration"].get<float>();
+    }
+    else {
+        spdlog::warn("Invalid frame duration! Using default.");
+    }
+
+    return frameJson;
 }
 
-Animation AnimationManager::parseAnimation(const nlohmann::basic_json<>& animationData){
-    Animation animation(animationData["name"]);
-    for (const auto& frameData : animationData["frames"]){
-        animation.addFrame(parseFrame(frameData));
+AnimationSet AnimationManager::createAnimationSet(const AnimationSetJson& animationSetJson) {
+    AnimationSet animationSet;
+
+    for (const auto& animation : animationSetJson.animations) {
+        animationSet.addAnimation(animation.name, createAnimation(animation));
     }
+
+    animationSet.setDefaultAnimation(animationSetJson.defaultAnimation);
+
+    return animationSet;
+}
+Animation AnimationManager::createAnimation(const AnimationJson& animationJson) {
+    Animation animation;
+
+    for (const auto& frame : animationJson.frames) {
+        animation.frames.emplace_back(createFrame(frame));
+    }
+
+    animation.defaultSpeed = animationJson.speed;
+    animation.speed = animationJson.speed;
 
     return animation;
+}
+Frame AnimationManager::createFrame(const FrameJson& frameJson) {
+    Frame frame;
+
+    frame.rect = sf::IntRect(frameJson.pos, frameJson.size);
+    frame.duration = frameJson.duration;
+
+    return frame;
 }

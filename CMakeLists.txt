@@ -29,41 +29,32 @@ FetchContent_Declare(
         GIT_TAG 3.0.2
         SYSTEM
 )
+FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG v1.17.0
+        SYSTEM
+)
 
 FetchContent_MakeAvailable(json)
 FetchContent_MakeAvailable(stb)
 FetchContent_MakeAvailable(sfml)
+FetchContent_MakeAvailable(spdlog)
 
 add_executable(sfml_mario_test
         src/main.cpp
-        src/Player.cpp
-        src/Player.h
-        src/Managers/TextureManager.cpp
-        src/Managers/TextureManager.h
-        src/Types/Animation.cpp
-        src/Types/Animation.h
-        src/Managers/AnimationManager.cpp
-        src/Managers/AnimationManager.h
-        src/Managers/TileManager.cpp
-        src/Managers/TileManager.h
-        src/Types/Tile.cpp
-        src/Types/Tile.h
-        src/Managers/LevelManager.cpp
-        src/Managers/LevelManager.h
-        src/Managers/GameManager.cpp
-        src/Managers/GameManager.h
-        src/Managers/InputManager.cpp
-        src/Managers/InputManager.h
-        src/Types/CollisionSide.cpp
-        src/Types/CollisionSide.h
-        src/Managers/AnimationSubManager.cpp
-        src/Managers/AnimationSubManager.h
-        src/Managers/ManagerUtilities.cpp
-        src/Managers/ManagerUtilities.h
+        # src/Player.cpp
+        # src/Player.h
         src/Globals.cpp
         src/Globals.h
-        src/Managers/SoundManager.cpp
-        src/Managers/SoundManager.h
+        src/Types/AnimationSet.cpp
+        src/Types/AnimationSet.h
+        src/Types/Animation.h
+        src/Types/Frame.h
+        src/Managers/AnimationManager.cpp
+        src/Managers/AnimationManager.h
+        src/Managers/ManagerUtilities.cpp
+        src/Managers/ManagerUtilities.h
 )
 
 
@@ -75,6 +66,7 @@ target_link_libraries(sfml_mario_test PRIVATE
         SFML::Audio
         nlohmann_json::nlohmann_json
         stb_interface
+        spdlog
 )
 
 install(TARGETS sfml_mario_test RUNTIME DESTINATION bin)

@@ -1,0 +1,12 @@
+Model Manager -
+- Loads .json files from assets/models/
+- Parses them into ModelJson
+- ModelJson is loaded into Model
+- Models are stored into array in ModelManager
+
+ModelJson -
+    string animationFile;
+    vector<string> textureFiles;
+
+Model -
+
