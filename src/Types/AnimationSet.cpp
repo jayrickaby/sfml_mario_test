@@ -4,6 +4,9 @@
 
 #include <spdlog/spdlog.h>
 #include "AnimationSet.h"
+
+#include <algorithm>
+
 #include "Animation.h"
 #include "Frame.h"
 #include "../Globals.h"
@@ -47,7 +50,7 @@ sf::IntRect AnimationSet::getCurrentFrame() {
 }
 
 void AnimationSet::add(const std::string& name, const Animation& animation) {
-    if (!animations.contains(name)) {
+    if (!isAnimation(name)) {
         animations.emplace(name, animation);
         return;
     }
@@ -68,7 +71,7 @@ void AnimationSet::play(const std::string& name) {
 }
 
 void AnimationSet::setDefaultAnimation(const std::string& name) {
-    if (animations.contains(name)) {
+    if (isAnimation(name)) {
         defaultAnimationName = name;
         return;
     }

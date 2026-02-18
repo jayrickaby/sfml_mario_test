@@ -6,13 +6,13 @@
 #include <stb_image.h>
 #define STB_RECT_PACK_IMPLEMENTATION
 #include <stb_rect_pack.h>
-
 #include <spdlog/spdlog.h>
 #include <SFML/Graphics.hpp>
 
 #include "TextureManager.h"
-#include "../Types/Texture.h"
 #include "ManagerUtilities.h"
+#include "../Types/Texture.h"
+
 
 bool TextureManager::initialised;
 std::filesystem::path TextureManager::fullPath;
