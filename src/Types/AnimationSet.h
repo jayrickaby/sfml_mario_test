@@ -24,8 +24,8 @@ public:
     AnimationSet() = default;
     ~AnimationSet() = default;
 
-    void updateAnimation();
-    void resetAnimation();
+    void update();
+    void reset();
 
     // Validators
     bool isAnimation(const std::string& name) const;
@@ -35,8 +35,8 @@ public:
     sf::IntRect getCurrentFrame() const;
 
     // Setters
-    void addAnimation(const std::string& name, const Animation& animation);
-    void playAnimation(const std::string& name);
+    void add(const std::string& name, const Animation& animation);
+    void play(const std::string& name);
     void setDefaultAnimation(const std::string& name);
 
 private:

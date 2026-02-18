@@ -8,7 +8,7 @@
 #include "Frame.h"
 #include "../Globals.h"
 
-void AnimationSet::updateAnimation() {
+void AnimationSet::update() {
     if (currentAnimationName.empty()) {
         currentAnimationName = defaultAnimationName;
     }
@@ -24,7 +24,7 @@ void AnimationSet::updateAnimation() {
         currentAnimation->frameIndex = (currentAnimation->frameIndex + 1) % currentAnimation->frames.size();
     }
 }
-void AnimationSet::resetAnimation() {
+void AnimationSet::reset() {
     Animation& currentAnimation = animations[currentAnimationName];
     currentAnimation.frameIndex = 0;
     currentAnimation.frameTimer = 0;
@@ -43,7 +43,7 @@ sf::IntRect AnimationSet::getCurrentFrame() const {
     return currentAnimation.frames[currentAnimation.frameIndex].rect;
 }
 
-void AnimationSet::addAnimation(const std::string& name, const Animation& animation) {
+void AnimationSet::add(const std::string& name, const Animation& animation) {
     if (!animations.contains(name)) {
         animations.emplace(name, animation);
         return;
@@ -51,13 +51,13 @@ void AnimationSet::addAnimation(const std::string& name, const Animation& animat
     spdlog::warn("Tried adding animation: \"" + name + "\", but it already exists!");
 }
 
-void AnimationSet::playAnimation(const std::string& name) {
+void AnimationSet::play(const std::string& name) {
     if (!isAnimation(name)) {
         spdlog::error("Tried to play animation: \"" + name + "\" but it doesn't exist!");
         throw std::invalid_argument("Animation doesn't exist!");
     }
 
-    resetAnimation();
+    reset();
     currentAnimationName = name;
 }
 

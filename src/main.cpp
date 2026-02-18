@@ -4,7 +4,9 @@
 
 #include "Globals.h"
 #include "Managers/AnimationManager.h"
+#include "Managers/TextureManager.h"
 #include "Types/AnimationSet.h"
+#include "Types/Texture.h"
 
 using json = nlohmann::json;
 
@@ -14,18 +16,23 @@ int main(){
     sf::View view(sf::Vector2f {screenDimensions.x/2,screenDimensions.y/2}, screenDimensions);
 
     AnimationManager::initialise();
-
-    sf::Texture texture("assets/textures/tiles/questionblock.png");
-    sf::Sprite sprite(texture);
-
-    AnimationSet qblock = AnimationManager::getAnimationSet("tiles/questionblock.json");
-    qblock.playAnimation("idle");
+    TextureManager::initialise();
+    Texture* texture = TextureManager::getTexture("tiles/questionblock.png");
+    AnimationSet anims = AnimationManager::getAnimationSet("tiles/questionblock.json");
+    sf::Sprite sprite(*texture->atlas);
 
     while (window.isOpen()){
         window.setView(view);
+
         Globals::updateDeltaTime();
-        qblock.updateAnimation();
-        sprite.setTextureRect(qblock.getCurrentFrame());
+        anims.update();
+
+        window.clear();
+
+        sf::IntRect rect(anims.getCurrentFrame());
+        rect.position += texture->rect.position;
+        sprite.setTextureRect(rect);
+
         window.draw(sprite);
         window.display();
     }

@@ -55,6 +55,11 @@ add_executable(sfml_mario_test
         src/Managers/AnimationManager.h
         src/Managers/ManagerUtilities.cpp
         src/Managers/ManagerUtilities.h
+        src/Managers/TextureManager.cpp
+        src/Managers/TextureManager.h
+        # src/Managers/ModelManager.cpp
+        # src/Managers/ModelManager.h
+        src/Types/Texture.h
 )
 
 

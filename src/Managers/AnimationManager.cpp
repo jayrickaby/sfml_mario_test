@@ -14,15 +14,15 @@
 #include "../Types/Frame.h"
 
 bool AnimationManager::initialised;
-std::filesystem::path AnimationManager::fullPath;
+    std::filesystem::path AnimationManager::fullPath;
 std::map<std::filesystem::path, AnimationSet> AnimationManager::animationSets;
 
 void AnimationManager::initialise(){
     fullPath = std::filesystem::path("assets/animations");
-    spdlog::info("Initialising animations...");
+    spdlog::info("Initialising Animation Manager!...");
     const auto& files = ManagerUtilities::getFilesFromPath(fullPath, {".json"});
     for (const auto& file : files) {
-        spdlog::info("Found file: \"" + file.string() + "\"");
+        spdlog::info("Found animation set: {}", file.string());
 
         std::ifstream fileContents((fullPath / file).string());
         if (fileContents.peek() == std::ifstream::traits_type::eof()) {
@@ -35,11 +35,12 @@ void AnimationManager::initialise(){
     }
 
     initialised = true;
+    spdlog::info("Initialised Animation Manager!");
 }
 
 bool AnimationManager::isAnimationSet(const std::filesystem::path& path) {
     if (!isInitialised()) {
-        spdlog::error("Tried to check if AnimationSet \"" + path.string() + "\" exists in uninitialised Animation Manager!");
+        spdlog::error("Tried to check if AnimationSet \"{}\" exists in uninitialised Animation Manager!", path.string());
         throw std::runtime_error("Animation Manager is uninitialised!");
     }
     return animationSets.contains(path);
@@ -153,7 +154,7 @@ AnimationSet AnimationManager::createAnimationSet(const AnimationSetJson& animat
     AnimationSet animationSet;
 
     for (const auto& animation : animationSetJson.animations) {
-        animationSet.addAnimation(animation.name, createAnimation(animation));
+        animationSet.add(animation.name, createAnimation(animation));
     }
 
     animationSet.setDefaultAnimation(animationSetJson.defaultAnimation);
