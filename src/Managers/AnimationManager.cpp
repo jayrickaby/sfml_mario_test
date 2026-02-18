@@ -19,7 +19,7 @@ std::map<std::filesystem::path, AnimationSet> AnimationManager::animationSets;
 
 void AnimationManager::initialise(){
     fullPath = std::filesystem::path("assets/animations");
-    spdlog::info("Initialising Animation Manager!...");
+    spdlog::info("Initialising Animation Manager...");
     const auto& files = ManagerUtilities::getFilesFromPath(fullPath, {".json"});
     for (const auto& file : files) {
         spdlog::info("Found animation set: {}", file.string());
@@ -60,7 +60,7 @@ AnimationSet AnimationManager::getAnimationSet(const std::filesystem::path& path
 AnimationSetJson AnimationManager::parseAnimationSetJson(const nlohmann::basic_json<>& data) {
     if (data.empty()) {
         spdlog::critical("Animation has no data!");
-        throw std::invalid_argument("Animation file has no data!");
+        throw std::invalid_argument("Animation has no data!");
     }
 
     AnimationSetJson animationSetJson;
@@ -129,7 +129,8 @@ FrameJson AnimationManager::parseFrameJson(const nlohmann::basic_json<>& data) {
         frameJson.size = ManagerUtilities::getVector2iFromJson(data["size"]);
     }
     else {
-        spdlog::warn("Invalid frame size! Using default.");
+        spdlog::error("Invalid frame size!");
+        throw std::runtime_error("Invalid frame size!");
     }
 
     if (data.contains("pos")
@@ -137,7 +138,8 @@ FrameJson AnimationManager::parseFrameJson(const nlohmann::basic_json<>& data) {
         frameJson.pos = ManagerUtilities::getVector2iFromJson(data["pos"]);
     }
     else {
-        spdlog::warn("Invalid frame position! Using default.");
+        spdlog::error("Invalid frame position!");
+        throw std::invalid_argument("Invalid frame position!");
     }
     if (data.contains("duration")
         && data["duration"].is_number()) {

@@ -1,9 +1,5 @@
 {
-  "animationFile": "anim_questionblock.json",
-  "properties": {
-    "isSolid": true,
-    "isBreakable": false
-  },
+  "animationFile": "tiles/questionblock.json",
   "textureFiles": [
     "tiles/questionblock.png"
   ]

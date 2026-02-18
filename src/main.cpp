@@ -4,6 +4,7 @@
 
 #include "Globals.h"
 #include "Managers/AnimationManager.h"
+#include "Managers/ModelManager.h"
 #include "Managers/TextureManager.h"
 #include "Types/AnimationSet.h"
 #include "Types/Texture.h"
@@ -17,23 +18,19 @@ int main(){
 
     AnimationManager::initialise();
     TextureManager::initialise();
-    Texture* texture = TextureManager::getTexture("tiles/questionblock.png");
-    AnimationSet anims = AnimationManager::getAnimationSet("tiles/questionblock.json");
-    sf::Sprite sprite(*texture->atlas);
+    ModelManager::initialise();
+    Model model = ModelManager::getModel("tiles/brick.json");
 
     while (window.isOpen()){
         window.setView(view);
 
         Globals::updateDeltaTime();
-        anims.update();
+        model.update();
 
         window.clear();
 
-        sf::IntRect rect(anims.getCurrentFrame());
-        rect.position += texture->rect.position;
-        sprite.setTextureRect(rect);
+        model.draw(window);
 
-        window.draw(sprite);
         window.display();
     }
 

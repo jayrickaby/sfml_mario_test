@@ -9,10 +9,7 @@
 #include <vector>
 
 #include "SFML/Graphics/Rect.hpp"
-
-
-struct AnimationJson;
-struct Animation;
+#include "Animation.h"
 
 struct AnimationSetJson {
     std::vector<AnimationJson> animations;

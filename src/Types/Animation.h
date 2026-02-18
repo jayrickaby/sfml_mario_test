@@ -6,10 +6,7 @@
 #define SFML_MARIO_TEST_ANIMATION_H
 #include <string>
 #include <vector>
-
-
-struct Frame;
-struct FrameJson;
+#include "Frame.h"
 
 struct AnimationJson {
     std::vector<FrameJson> frames;
