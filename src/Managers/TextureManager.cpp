@@ -33,9 +33,6 @@ void TextureManager::initialise() {
     spdlog::info("Created texture atlas!");
 
     initialised = true;
-    for (auto& texture : textures | std::views::values) {
-        texture.atlas = getAtlas();
-    }
     spdlog::info("Initialised Texture Manager!");
 }
 

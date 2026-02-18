@@ -51,10 +51,10 @@ bool ModelManager::isInitialised() {
 
 Model ModelManager::getModel(const std::filesystem::path& path) {
     if (!isModel(path)) {
-        spdlog::error("Tried to get Model \"" + path.string() + "\", but it doesn't exist!");
+        spdlog::error("Tried to get Model \"{}\" but it doesn't exist!", path.string());
         throw std::invalid_argument("Model doesn't exist!");
     }
-    return std::move(models[path]);
+    return models[path];
 }
 
 ModelJson ModelManager::parseModelJson(const nlohmann::basic_json<>& data) {
@@ -90,6 +90,15 @@ ModelJson ModelManager::parseModelJson(const nlohmann::basic_json<>& data) {
         if (!std::ranges::contains(modelJson.textureFiles, path)) {
             modelJson.textureFiles.emplace_back(path);
         }
+    }
+
+    // Default Texture
+    if (data.contains("defaultTexture") && data["defaultTexture"].is_string()) {
+        modelJson.defaultTexture = data["defaultTexture"].get<std::string>();
+    }
+    else {
+        spdlog::warn("Default texture is invalid. Using first texture in list!");
+        modelJson.defaultTexture = modelJson.textureFiles.front();
     }
 
     return modelJson;

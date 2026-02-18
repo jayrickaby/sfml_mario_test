@@ -19,7 +19,7 @@ struct ModelJson {
 
 class Model {
 public:
-    Model() = default;
+    Model();
 
     void update();
     void draw(sf::RenderTarget& target) const;
@@ -42,7 +42,7 @@ private:
 
     std::optional<AnimationSet> animations;
     std::map<std::filesystem::path, Texture*> textures;
-    std::unique_ptr<sf::Sprite> sprite;
+    sf::Sprite sprite;
 
     std::filesystem::path currentTextureName;
     std::filesystem::path defaultTextureName;

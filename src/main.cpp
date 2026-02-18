@@ -19,7 +19,7 @@ int main(){
     AnimationManager::initialise();
     TextureManager::initialise();
     ModelManager::initialise();
-    Model model = ModelManager::getModel("tiles/brick.json");
+    Model model = ModelManager::getModel("tiles/questionblock.json");
 
     while (window.isOpen()){
         window.setView(view);

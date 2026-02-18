@@ -7,22 +7,30 @@
 #include <algorithm>
 #include <spdlog/spdlog.h>
 
+#include "../Managers/TextureManager.h"
 #include "SFML/Graphics/RenderTarget.hpp"
 
+Model::Model() :
+    sprite(*TextureManager::getAtlas())
+{}
+
 void Model::update() {
+    // So it default to atlas rect's proportions
     sf::IntRect rect{textures[currentTextureName]->rect};
 
     if (animations) {
         animations->update();
+
+        // So it adjust proportions based on animation frame (if applicable)
         rect.position += animations->getCurrentFrame().position;
         rect.size = animations->getCurrentFrame().size;
     }
 
-    sprite->setTextureRect(rect);
+    sprite.setTextureRect(rect);
 }
 
 void Model::draw(sf::RenderTarget& target) const {
-    target.draw(*sprite);
+    target.draw(sprite);
 }
 
 bool Model::isTexture(const std::filesystem::path& path) const {
@@ -64,18 +72,5 @@ void Model::setTexture(const std::filesystem::path& path) {
     }
     currentTextureName = path;
 
-    if (!isSpriteInitialised()) {
-        initialiseSprite();
-    }
-
-    sprite->setTextureRect(textures[currentTextureName]->rect);
-}
-
-
-bool Model::isSpriteInitialised() const {
-    return sprite != nullptr;
-}
-
-void Model::initialiseSprite() {
-    sprite = std::make_unique<sf::Sprite>(*textures[currentTextureName]->atlas);
+    sprite.setTextureRect(textures[currentTextureName]->rect);
 }

@@ -38,7 +38,10 @@ bool AnimationSet::isAnimation(const std::string& name) const {
 std::string AnimationSet::getCurrentAnimationName() const {
     return currentAnimationName;
 }
-sf::IntRect AnimationSet::getCurrentFrame() const {
+sf::IntRect AnimationSet::getCurrentFrame() {
+    if (currentAnimationName.empty()) {
+        currentAnimationName = defaultAnimationName;
+    }
     const Animation& currentAnimation = animations.at(currentAnimationName);
     return currentAnimation.frames[currentAnimation.frameIndex].rect;
 }
@@ -57,8 +60,11 @@ void AnimationSet::play(const std::string& name) {
         throw std::invalid_argument("Animation doesn't exist!");
     }
 
-    reset();
-    currentAnimationName = name;
+    if (currentAnimationName != name) {
+        // So old animation is left how it was found
+        reset();
+        currentAnimationName = name;
+    }
 }
 
 void AnimationSet::setDefaultAnimation(const std::string& name) {

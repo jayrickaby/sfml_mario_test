@@ -10,7 +10,6 @@
 struct Texture {
     std::filesystem::path path;
     sf::IntRect rect;
-    sf::Texture* atlas;
 };
 
 #endif //SFML_MARIO_TEST_TEXTURE_H
