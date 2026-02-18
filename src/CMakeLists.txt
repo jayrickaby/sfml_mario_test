@@ -1,0 +1,22 @@
+add_executable(sfml_mario_test
+        main.cpp
+        # Player.cpp
+        # Player.h
+        Globals.cpp
+        Globals.h
+        Managers/AnimationManager.cpp
+        Managers/AnimationManager.h
+        Managers/ManagerUtilities.cpp
+        Managers/ManagerUtilities.h
+        Managers/ModelManager.cpp
+        Managers/ModelManager.h
+        Managers/TextureManager.cpp
+        Managers/TextureManager.h
+        Types/Animation.h
+        Types/AnimationSet.cpp
+        Types/AnimationSet.h
+        Types/Frame.h
+        Types/Model.cpp
+        Types/Model.h
+        Types/Texture.h
+)

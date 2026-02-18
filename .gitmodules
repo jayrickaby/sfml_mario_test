@@ -1,0 +1,18 @@
+[submodule "include/json"]
+	path = dependencies/json
+	url = https://github.com/nlohmann/json.git
+[submodule "include/stb"]
+	path = dependencies/stb
+	url = https://github.com/nothings/stb.git
+[submodule "include/SFML"]
+	path = dependencies/sfml
+	url = https://github.com/SFML/SFML.git
+[submodule "include/spdlog"]
+	path = dependencies/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "dependencies/imgui"]
+	path = dependencies/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "dependencies/imgui-sfml"]
+	path = dependencies/imgui-sfml
+	url = https://github.com/SFML/imgui-sfml.git
