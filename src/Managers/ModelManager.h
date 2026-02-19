@@ -23,7 +23,7 @@ public:
     static Model getModel(const std::filesystem::path& path);
 
 private:
-    static ModelJson parseModelJson(const nlohmann::basic_json<>& path);
+    static ModelJson parseModelJson(const nlohmann::basic_json<>& data);
 
     static Model createModel(const ModelJson& modelJson);
 

@@ -5,6 +5,7 @@
 #include "ManagerUtilities.h"
 
 #include <filesystem>
+#include <fstream>
 
 #include "SFML/System/Vector2.hpp"
 
@@ -34,9 +35,15 @@ std::vector<std::filesystem::path> ManagerUtilities::getFilesFromPath(const std:
     }
     return files;
 }
-
 std::vector<std::filesystem::path> ManagerUtilities::getFilesFromPath(const std::filesystem::path& path) {
     return getFilesFromPath(path, {});
+}
+
+bool ManagerUtilities::isFileEmpty(std::ifstream& data) {
+    if (data.peek() == std::ifstream::traits_type::eof()) {
+        return true;
+    }
+    return false;
 }
 
 sf::Vector2i ManagerUtilities::getVector2iFromJson(const nlohmann::basic_json<>& data) {

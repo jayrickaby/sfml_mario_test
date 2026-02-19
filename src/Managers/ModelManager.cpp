@@ -24,7 +24,7 @@ void ModelManager::initialise() {
         spdlog::info("Found model: {}", file.string());
 
         std::ifstream fileContents((fullPath / file).string());
-        if (fileContents.peek() == std::ifstream::traits_type::eof()) {
+        if (ManagerUtilities::isFileEmpty(fileContents)) {
             spdlog::critical("File: \"" + file.string() + "\" has no data!");
             throw std::invalid_argument("Model file has no data!");
         }

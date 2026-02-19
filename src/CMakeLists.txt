@@ -19,4 +19,8 @@ add_executable(sfml_mario_test
         Types/Model.cpp
         Types/Model.h
         Types/Texture.h
+        Managers/TileManager.cpp
+        Managers/TileManager.h
+        Types/Tile.cpp
+        Types/Tile.h
 )

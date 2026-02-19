@@ -1,0 +1,6 @@
+{
+  "modelFile": "tiles/questionblock.json",
+  "properties": {
+    "isAnimated": true
+  }
+}
