@@ -20,7 +20,12 @@ public:
     void update();
     void draw(sf::RenderTarget& target) const;
 
+    // Getters
+    Model* getModelFile();
+
+    // Setters
     void setModelFile(const std::filesystem::path& path);
+    void setPosition(const sf::Vector2i& pos);
 
 private:
     Model model;

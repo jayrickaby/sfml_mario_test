@@ -15,10 +15,18 @@ void Tile::draw(sf::RenderTarget& target) const {
     model.draw(target);
 }
 
+Model* Tile::getModelFile() {
+    return &model;
+}
+
 void Tile::setModelFile(const std::filesystem::path& path) {
     if (!ModelManager::isModel(path)) {
         spdlog::error("Model file is not valid!");
         throw std::invalid_argument("Model file is not valid!");
     }
     model = ModelManager::getModel(path);
+}
+
+void Tile::setPosition(const sf::Vector2i& pos) {
+    model.getSprite()->setPosition(sf::Vector2f(pos));
 }

@@ -15,7 +15,7 @@ std::map<std::string, Tile> TileManager::tiles;
 
 void TileManager::initialise() {
     fullPath = std::filesystem::path("assets/tiles");
-    spdlog::info("Initialising Tile Manager!");
+    spdlog::info("Initialising Tile Manager...");
     const auto& files = ManagerUtilities::getFilesFromPath(fullPath, {".json"});
     for (const auto& file : files) {
         spdlog::info("Found tile: {}", file.string());
@@ -23,7 +23,7 @@ void TileManager::initialise() {
         std::ifstream fileContents{(fullPath / file).string()};
         if (ManagerUtilities::isFileEmpty(fileContents)) {
             spdlog::critical("File: \"{}\" has no data!");
-            throw std::invalid_argument("Model file has no data!");
+            throw std::invalid_argument("Tile file has no data!");
         }
         nlohmann::basic_json<> data(nlohmann::json::parse(fileContents));
 
@@ -41,7 +41,6 @@ bool TileManager::isTile(const std::string& name) {
     }
     return tiles.contains(name);
 }
-
 bool TileManager::isInitialised() {
     return initialised;
 }
@@ -52,6 +51,10 @@ Tile TileManager::getTile(const std::string& name) {
         throw std::invalid_argument("Tile doesn't exist!");
     }
     return tiles[name];
+}
+
+std::map<std::string, Tile> TileManager::getTiles() {
+    return tiles;
 }
 
 TileJson TileManager::parseTileJson(const nlohmann::basic_json<>& data) {

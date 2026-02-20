@@ -29,6 +29,7 @@ public:
 
     // Getters
     std::filesystem::path getDefaultTextureName() const;
+    sf::Sprite* getSprite();
 
     // Setters
     void addTexture(const std::filesystem::path& path, Texture* texture);

@@ -2,39 +2,39 @@
   "playerData": {
     "startPos": [2,2]
   },
-  "levelData": [
+  "tileData": [
     {
-      "name": "ground",
+      "tile": "ground",
       "pos": [0,14],
       "size": [16,2],
       "skinOverride": -1
     },
     {
-      "name": "brick",
+      "tile": "brick",
       "pos": [5,10],
       "size": [1,1],
       "skinOverride": -1
     },
     {
-      "name": "questionblock",
+      "tile": "questionblock",
       "pos": [6,10],
       "size": [1,1],
       "skinOverride": -1
     },
     {
-      "name": "brick",
+      "tile": "brick",
       "pos": [7,10],
       "size": [1,1],
       "skinOverride": -1
     },
     {
-      "name": "questionblock",
+      "tile": "questionblock",
       "pos": [8,10],
       "size": [1,1],
       "skinOverride": -1
     },
     {
-      "name": "brick",
+      "tile": "brick",
       "pos": [9,10],
       "size": [1,1],
       "skinOverride": -1

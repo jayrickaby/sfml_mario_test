@@ -41,6 +41,10 @@ std::filesystem::path Model::getDefaultTextureName() const {
     return defaultTextureName;
 }
 
+sf::Sprite* Model::getSprite() {
+    return &sprite;
+}
+
 void Model::addTexture(const std::filesystem::path& path, Texture* texture) {
     if (isTexture(path)) {
         spdlog::warn("Tried adding texture \"{}\" but it already exists in list!");

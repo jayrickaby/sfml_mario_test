@@ -23,4 +23,7 @@ add_executable(sfml_mario_test
         Managers/TileManager.h
         Types/Tile.cpp
         Types/Tile.h
+        Managers/LevelManager.cpp
+        Managers/LevelManager.h
+        Types/Level.h
 )

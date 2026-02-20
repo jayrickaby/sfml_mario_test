@@ -48,7 +48,20 @@ bool ManagerUtilities::isFileEmpty(std::ifstream& data) {
 
 sf::Vector2i ManagerUtilities::getVector2iFromJson(const nlohmann::basic_json<>& data) {
     sf::Vector2i vec;
-    vec.x = data[0].get<int>();
-    vec.y = data[1].get<int>();
+
+    if (!data[0].is_number_integer()) {
+        vec.x = 0;
+    }
+    else {
+        vec.x = data[0].get<int>();
+    }
+
+    if (!data[1].is_number_integer()) {
+        vec.y = 0;
+    }
+    else {
+        vec.y = data[1].get<int>();
+    }
+
     return vec;
 }

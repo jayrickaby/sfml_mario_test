@@ -25,6 +25,7 @@ public:
 
     // Getters
     static Tile getTile(const std::string& name);
+    static std::map<std::string, Tile> getTiles();
 
 private:
     static TileJson parseTileJson(const nlohmann::basic_json<>& data);
