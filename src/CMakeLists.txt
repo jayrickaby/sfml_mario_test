@@ -26,4 +26,8 @@ add_executable(sfml_mario_test
         Managers/LevelManager.cpp
         Managers/LevelManager.h
         Types/Level.h
+        Managers/EditorManager.cpp
+        Managers/EditorManager.h
+        Managers/GameManager.cpp
+        Managers/GameManager.h
 )

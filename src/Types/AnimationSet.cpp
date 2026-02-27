@@ -41,10 +41,7 @@ bool AnimationSet::isAnimation(const std::string& name) const {
 std::string AnimationSet::getCurrentAnimationName() const {
     return currentAnimationName;
 }
-sf::IntRect AnimationSet::getCurrentFrame() {
-    if (currentAnimationName.empty()) {
-        currentAnimationName = defaultAnimationName;
-    }
+sf::IntRect AnimationSet::getCurrentFrame() const {
     const Animation& currentAnimation = animations.at(currentAnimationName);
     return currentAnimation.frames[currentAnimation.frameIndex].rect;
 }

@@ -30,6 +30,7 @@ public:
     // Getters
     std::filesystem::path getDefaultTextureName() const;
     sf::Sprite* getSprite();
+    sf::IntRect getIntRect() const;
 
     // Setters
     void addTexture(const std::filesystem::path& path, Texture* texture);

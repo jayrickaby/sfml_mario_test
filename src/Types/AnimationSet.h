@@ -29,7 +29,7 @@ public:
 
     // Getters
     std::string getCurrentAnimationName() const;
-    sf::IntRect getCurrentFrame();
+    sf::IntRect getCurrentFrame() const;
 
     // Setters
     void add(const std::string& name, const Animation& animation);

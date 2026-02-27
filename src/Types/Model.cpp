@@ -45,6 +45,10 @@ sf::Sprite* Model::getSprite() {
     return &sprite;
 }
 
+sf::IntRect Model::getIntRect() const {
+    return sprite.getTextureRect();
+}
+
 void Model::addTexture(const std::filesystem::path& path, Texture* texture) {
     if (isTexture(path)) {
         spdlog::warn("Tried adding texture \"{}\" but it already exists in list!");

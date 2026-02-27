@@ -13,15 +13,17 @@ public:
     ~Globals() = default;
 
     // Getters
-    static sf::Vector2f getScreenDimensions() {return sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT);}
     static float getDeltaTime();
+    static sf::Vector2i getMousePosition() {return mousePosition;};
+    static sf::Vector2i getScreenDimensions() {return {SCREEN_WIDTH, SCREEN_HEIGHT};}
 
     // Updater
-    static void updateDeltaTime();
+    static void update(const sf::RenderWindow* window);
 
 private:
     // Globals
     static float deltaTime;
+    static sf::Vector2i mousePosition;
     static sf::Clock clock;
 
     // Consts
