@@ -66,15 +66,19 @@ void EditorManager::update() {
         ImGui::SFML::Update(*window, sf::seconds(Globals::getDeltaTime()));
         handleInput();
         createEditor();
+
         const sf::Vector2f mouseCoordPosition = window->mapPixelToCoords(Globals::getMousePosition(), *view);
         mouseGridPosition = {std::floor(mouseCoordPosition.x / 16), std::floor(mouseCoordPosition.y / 16)};
         mousePositionText->setPosition({mouseCoordPosition.x, mouseCoordPosition.y - 8});
 
-        if (!selectedObject.empty()) {
-            selectedObjectSprite = *tiles[selectedObject].getModelFile()->getSprite();
+        if (!selectedObject.empty() && selectedObjectSprite.has_value()) {
             selectedObjectSprite->setTextureRect(tiles[selectedObject].getModelFile()->getIntRect());
             // Multiply by 16 after dividing and floored so that it 'snaps' to grid
             selectedObjectSprite->setPosition({mouseGridPosition.x * 16, mouseGridPosition.y * 16});
+            selectedObjectSprite->setColor({255,255,255,192});
+        }
+        else if (!selectedObject.empty() && !selectedObjectSprite.has_value()) {
+            selectedObjectSprite = *tiles[selectedObject].getModelFile()->getSprite();
         }
 
         const std::string text{"(" + std::to_string(mouseGridPosition.x) + ", " + std::to_string(mouseGridPosition.y) + ")"};
@@ -139,6 +143,7 @@ void EditorManager::createEditor() {
         if (ImGui::ImageButton(tile.first.c_str(), sprite, sf::Vector2f{32,32})){
             selectedObject = tile.first;
         }
+        ImGui::SameLine();
     }
 
     ImGui::End();
