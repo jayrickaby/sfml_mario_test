@@ -13,7 +13,7 @@
 #include "../Types/Texture.h"
 
 
-bool TextureManager::initialised;
+bool TextureManager::initialised = false;
 std::filesystem::path TextureManager::fullPath;
 
 std::map<std::filesystem::path, Texture> TextureManager::textures;
@@ -56,11 +56,11 @@ sf::Texture* TextureManager::getAtlas() {
 }
 
 Texture* TextureManager::getTexture(const std::filesystem::path& path) {
-    if (!isInitialised()) {
+    if (!isTexture(path)) {
         spdlog::error("Tried to get AtlasRect \"{}\" in uninitialised Texture Manager!", path.string());
         throw std::runtime_error("Texture Manager is uninitialised!");
     }
-    return &textures.at(path);
+    return &textures[path];
 }
 
 sf::Texture TextureManager::createAtlas(const std::vector<std::filesystem::path>& files) {

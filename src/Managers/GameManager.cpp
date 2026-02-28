@@ -6,6 +6,7 @@
 
 #include "AnimationManager.h"
 #include "EditorManager.h"
+#include "FontManager.h"
 #include "LevelManager.h"
 #include "ModelManager.h"
 #include "TextureManager.h"
@@ -28,6 +29,7 @@ void GameManager::initialise(sf::RenderWindow* targetWindow, sf::View* targetVie
     ModelManager::initialise();
     TileManager::initialise();
     LevelManager::initialise();
+    FontManager::initialise();
     EditorManager::initialise(window, view);
 
     level = LevelManager::getLevel("1-1.json");

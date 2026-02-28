@@ -17,6 +17,7 @@ public:
     static void initialise(sf::RenderWindow* targetWindow, sf::View* targetView);
     static void processEvents(const std::optional<sf::Event>& event);
     static void update();
+    static void handleInput();
     static void draw();
 
     static void enable();
@@ -33,8 +34,8 @@ private:
     static std::string selectedObject;
     static std::optional<sf::Sprite> selectedObjectSprite;
 
-    static sf::Vector2i mouseGridPosition;
-    static sf::Text mousePositionText;
+    static sf::Vector2f mouseGridPosition;
+    static std::optional<sf::Text> mousePositionText;
 
     static std::map<std::string, Tile> tiles;
     static bool initialised;

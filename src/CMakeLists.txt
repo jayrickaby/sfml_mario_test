@@ -30,4 +30,6 @@ add_executable(sfml_mario_test
         Managers/EditorManager.h
         Managers/GameManager.cpp
         Managers/GameManager.h
+        Managers/FontManager.cpp
+        Managers/FontManager.h
 )

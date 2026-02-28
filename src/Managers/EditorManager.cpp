@@ -6,6 +6,9 @@
 
 #include <iostream>
 #include <string>
+
+#include "FontManager.h"
+#include "GameManager.h"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "../Globals.h"
@@ -14,12 +17,13 @@
 
 sf::RenderWindow* EditorManager::window = nullptr;
 sf::View* EditorManager::view = nullptr;
+Level* EditorManager::level = nullptr;
 
 std::string EditorManager::selectedObject;
 std::optional<sf::Sprite> EditorManager::selectedObjectSprite;
 
-sf::Vector2i EditorManager::mouseGridPosition;
-sf::Text EditorManager::mousePositionText("");
+sf::Vector2f EditorManager::mouseGridPosition;
+std::optional<sf::Text> EditorManager::mousePositionText;
 
 std::map<std::string, Tile> EditorManager::tiles;
 bool EditorManager::enabled = true;
@@ -29,10 +33,16 @@ void EditorManager::initialise(sf::RenderWindow* targetWindow, sf::View* targetV
     spdlog::info("Initialising Editor Manager...");
     window = targetWindow;
     view = targetView;
+    level = GameManager::getLevel();
+    mousePositionText = *FontManager::getFont("arial");
+
     if (ImGui::SFML::Init(*window)) {
         spdlog::info("ImGui Initialised!");
     };
     loadTiles();
+    mousePositionText->setScale({0.25f, 0.25f});
+    mousePositionText->setOutlineColor(sf::Color::Black);
+    mousePositionText->setOutlineThickness(1);
     initialised = true;
     spdlog::info("Initialised Editor Manager!");
 }
@@ -54,12 +64,30 @@ void EditorManager::update() {
     }
     if (enabled) {
         ImGui::SFML::Update(*window, sf::seconds(Globals::getDeltaTime()));
+        handleInput();
         createEditor();
         if (!selectedObject.empty()) {
             selectedObjectSprite = *tiles[selectedObject].getModelFile()->getSprite();
             selectedObjectSprite->setTextureRect(tiles[selectedObject].getModelFile()->getIntRect());
-            selectedObjectSprite->setPosition(window->mapPixelToCoords(Globals::getMousePosition(), *view));
+            selectedObjectSprite->setPosition({mouseGridPosition.x * 16, mouseGridPosition.y * 16});
         }
+
+        const std::string text{"(" + std::to_string(mouseGridPosition.x) + ", " + std::to_string(mouseGridPosition.y) + ")"};
+        mousePositionText->setString(text);
+    }
+}
+
+void EditorManager::handleInput() {
+    const sf::Vector2f mouseCoordPosition = window->mapPixelToCoords(Globals::getMousePosition(), *view);
+    mouseGridPosition = {std::floor(mouseCoordPosition.x / 16), std::floor(mouseCoordPosition.y / 16)};
+    mousePositionText->setPosition({mouseCoordPosition.x, mouseCoordPosition.y - 8});
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !selectedObject.empty()) {
+        const std::pair coords{static_cast<int>(mouseGridPosition.x * 16),static_cast<int>(mouseGridPosition.y * 16)};
+        std::cout << mouseGridPosition.x << ", " << mouseGridPosition.y << std::endl;
+        //@TODO Fix QBlock animation Offset -> GameManager has global animation timer?? Or all animations reset when a animated tile is created
+        level->tiles[coords] = TileManager::getTile(selectedObject);
+        level->tiles[coords].setPosition(sf::Vector2i{coords.first, coords.second});
     }
 }
 
@@ -77,6 +105,9 @@ void EditorManager::draw() {
             window->draw(*selectedObjectSprite);
         }
         ImGui::SFML::Render(*window);
+        if (mousePositionText.has_value()) {
+            window->draw(*mousePositionText);
+        }
     }
 }
 
@@ -105,11 +136,6 @@ void EditorManager::createEditor() {
         spdlog::critical("Tried to create Editor Manager, but no window has been attached!");
         throw std::runtime_error("Editor Manager has no attached window!");
     }
-    sf::Vector2f mousePosition({window->mapPixelToCoords(Globals::getMousePosition(), *view)});
-    mouseGridPosition = ({std::floor(mousePosition.x), std::floor(mousePosition.y)});
-
-
-
     ImGui::Begin("Editor");
 
     for (auto& tile : tiles) {
