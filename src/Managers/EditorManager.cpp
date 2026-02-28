@@ -66,9 +66,14 @@ void EditorManager::update() {
         ImGui::SFML::Update(*window, sf::seconds(Globals::getDeltaTime()));
         handleInput();
         createEditor();
+        const sf::Vector2f mouseCoordPosition = window->mapPixelToCoords(Globals::getMousePosition(), *view);
+        mouseGridPosition = {std::floor(mouseCoordPosition.x / 16), std::floor(mouseCoordPosition.y / 16)};
+        mousePositionText->setPosition({mouseCoordPosition.x, mouseCoordPosition.y - 8});
+
         if (!selectedObject.empty()) {
             selectedObjectSprite = *tiles[selectedObject].getModelFile()->getSprite();
             selectedObjectSprite->setTextureRect(tiles[selectedObject].getModelFile()->getIntRect());
+            // Multiply by 16 after dividing and floored so that it 'snaps' to grid
             selectedObjectSprite->setPosition({mouseGridPosition.x * 16, mouseGridPosition.y * 16});
         }
 
@@ -78,13 +83,9 @@ void EditorManager::update() {
 }
 
 void EditorManager::handleInput() {
-    const sf::Vector2f mouseCoordPosition = window->mapPixelToCoords(Globals::getMousePosition(), *view);
-    mouseGridPosition = {std::floor(mouseCoordPosition.x / 16), std::floor(mouseCoordPosition.y / 16)};
-    mousePositionText->setPosition({mouseCoordPosition.x, mouseCoordPosition.y - 8});
-
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !selectedObject.empty()) {
+        // Multiply by 16 after dividing and floored so that it 'snaps' to grid
         const std::pair coords{static_cast<int>(mouseGridPosition.x * 16),static_cast<int>(mouseGridPosition.y * 16)};
-        std::cout << mouseGridPosition.x << ", " << mouseGridPosition.y << std::endl;
         //@TODO Fix QBlock animation Offset -> GameManager has global animation timer?? Or all animations reset when a animated tile is created
         level->tiles[coords] = TileManager::getTile(selectedObject);
         level->tiles[coords].setPosition(sf::Vector2i{coords.first, coords.second});
@@ -113,10 +114,12 @@ void EditorManager::draw() {
 
 void EditorManager::enable() {
     enabled = true;
+    window->setMouseCursorVisible(true);
 }
 
 void EditorManager::disable() {
     enabled = false;
+    window->setMouseCursorVisible(false);
 }
 
 bool EditorManager::isEnabled() {
@@ -128,14 +131,6 @@ void EditorManager::loadTiles() {
 }
 
 void EditorManager::createEditor() {
-    if (!initialised) {
-        spdlog::critical("Tried to create Editor Manager, but it isn't initialised!");
-        throw std::runtime_error("Editor Manager is uninitialised!");
-    }
-    if (window == nullptr) {
-        spdlog::critical("Tried to create Editor Manager, but no window has been attached!");
-        throw std::runtime_error("Editor Manager has no attached window!");
-    }
     ImGui::Begin("Editor");
 
     for (auto& tile : tiles) {
