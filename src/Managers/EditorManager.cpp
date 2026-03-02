@@ -137,13 +137,30 @@ void EditorManager::loadTiles() {
 void EditorManager::createEditor() {
     ImGui::Begin("Editor");
 
-    for (auto& tile : tiles) {
-        tile.second.update();
-        sf::Sprite sprite = *tile.second.getModelFile()->getSprite();
-        if (ImGui::ImageButton(tile.first.c_str(), sprite, sf::Vector2f{32,32})){
-            selectedObject = tile.first;
+    if (ImGui::CollapsingHeader("Tiles")) {
+        for (auto& tile : tiles) {
+            tile.second.update();
+            sf::Sprite sprite = *tile.second.getModelFile()->getSprite();
+            if (ImGui::ImageButton(tile.first.c_str(), sprite, sf::Vector2f{32,32})){
+                selectedObject = tile.first;
+            }
         }
-        ImGui::SameLine();
+    }
+
+    ImGui::NewLine();
+
+    float backgroundColour[3] = {
+        level->properties.backgroundColour.r / 255.0f,
+        level->properties.backgroundColour.g / 255.0f,
+        level->properties.backgroundColour.b / 255.0f
+    };
+
+    if (ImGui::CollapsingHeader("Level Properties")) {
+        if (ImGui::ColorEdit3("Level Colour", backgroundColour, ImGuiColorEditFlags_NoInputs)) {
+            level->properties.backgroundColour.r = static_cast<uint8_t>(backgroundColour[0] * 255.0f);
+            level->properties.backgroundColour.g = static_cast<uint8_t>(backgroundColour[1] * 255.0f);
+            level->properties.backgroundColour.b = static_cast<uint8_t>(backgroundColour[2] * 255.0f);
+        }
     }
 
     ImGui::End();

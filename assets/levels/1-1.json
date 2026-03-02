@@ -1,4 +1,7 @@
 {
+  "levelProperties": {
+    "backgroundColour": [97,133,248]
+  },
   "playerData": {
     "startPos": [2,2]
   },

@@ -62,6 +62,22 @@ LevelJson LevelManager::parseLevelJson(const nlohmann::basic_json<>& data) {
 
     LevelJson levelJson;
 
+    if (data.contains("levelProperties")) {
+        LevelPropertiesJson levelProperties;
+        const auto& properties(data["levelProperties"]);
+        if (properties.contains("backgroundColour")
+            && properties["backgroundColour"].is_array()
+            && properties["backgroundColour"].size() == 3) {
+            levelProperties.backgroundColour[0] = properties["backgroundColour"][0].get<int>();
+            levelProperties.backgroundColour[1] = properties["backgroundColour"][1].get<int>();
+            levelProperties.backgroundColour[2] = properties["backgroundColour"][2].get<int>();
+        }
+        else {
+            spdlog::warn("No background colour provided! Using default.");
+        }
+        levelJson.properties = levelProperties;
+    }
+
     if (data.contains("tileData")) {
         for (const auto& tile : data["tileData"]) {
             if (tile.empty()) {
@@ -71,29 +87,31 @@ LevelJson LevelManager::parseLevelJson(const nlohmann::basic_json<>& data) {
             if (tile.contains("tile")
                 && tile["tile"].is_string()
                 && !tile["tile"].empty()) {
-                tileDataJson.tile = tile["tile"];
+                tileDataJson.tile = tile["tile"].get<std::string>();
             }
             else {
-                spdlog::warn("Tile is not specified! Skipping...");
+                spdlog::warn("Tile is not specified! Skipping tile...");
                 continue;
             }
 
             if (tile.contains("pos")
                 && tile["pos"].is_array()
-                && !tile["pos"].empty()) {
-                tileDataJson.pos = ManagerUtilities::getVector2iFromJson(tile["pos"]);
+                && tile["pos"].size() == 2) {
+                tileDataJson.pos[0] = tile["pos"][0].get<int>();
+                tileDataJson.pos[1] = tile["pos"][1].get<int>();
             }
             else {
-                spdlog::warn("Tile has no position specified! Skipping...");
+                spdlog::warn("Tile has invalid position! Skipping tile...");
                 continue;
             }
             if (tile.contains("size")
                 && tile["size"].is_array()
-                && !tile["size"].empty()) {
-                tileDataJson.size = ManagerUtilities::getVector2iFromJson(tile["size"]);
+                && tile["size"].size() == 2) {
+                tileDataJson.size[0] = tile["size"][0].get<int>();
+                tileDataJson.size[1] = tile["size"][1].get<int>();
                 }
             else {
-                spdlog::warn("Tile has no size specified! Skipping");
+                spdlog::warn("Tile has invalid size! Skipping tile...");
                 continue;
             }
             levelJson.tiles.emplace_back(tileDataJson);
@@ -105,10 +123,14 @@ LevelJson LevelManager::parseLevelJson(const nlohmann::basic_json<>& data) {
 
 Level LevelManager::createLevel(const LevelJson& levelJson) {
     Level level;
+    level.properties.backgroundColour.r = levelJson.properties.backgroundColour[0];
+    level.properties.backgroundColour.g = levelJson.properties.backgroundColour[1];
+    level.properties.backgroundColour.b = levelJson.properties.backgroundColour[2];
+
     for (const auto& tileData : levelJson.tiles) {
-        for (int i = 0; i < tileData.size.x; i++) {
-            for (int j = 0; j < tileData.size.y; j++) {
-                sf::Vector2i newPosition{tileData.pos.x + i, tileData.pos.y + j};
+        for (int i = 0; i < tileData.size[0]; i++) {
+            for (int j = 0; j < tileData.size[1]; j++) {
+                sf::Vector2i newPosition{tileData.pos[0] + i, tileData.pos[1] + j};
                 sf::Vector2i pixelPosition{newPosition.x * 16, newPosition.y * 16};
 
                 Tile tile = TileManager::getTile(tileData.tile);

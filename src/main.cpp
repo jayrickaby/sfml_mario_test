@@ -27,7 +27,7 @@ int main(){
     while (window.isOpen()) {
         GameManager::update();
 
-        window.clear();
+        window.clear(GameManager::getLevel()->properties.backgroundColour);
         GameManager::draw();
         window.display();
     }
