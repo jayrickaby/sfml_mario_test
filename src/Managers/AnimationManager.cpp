@@ -125,8 +125,10 @@ FrameJson AnimationManager::parseFrameJson(const nlohmann::basic_json<>& data) {
     FrameJson frameJson;
 
     if (data.contains("size")
-        && data["size"].is_array()) {
-        frameJson.size = ManagerUtilities::getVector2iFromJson(data["size"]);
+        && data["size"].is_array()
+        && data["size"].size() == 2) {
+        frameJson.size[0] = data["size"][0];
+        frameJson.size[1] = data["size"][1];
     }
     else {
         spdlog::error("Invalid frame size!");
@@ -134,8 +136,10 @@ FrameJson AnimationManager::parseFrameJson(const nlohmann::basic_json<>& data) {
     }
 
     if (data.contains("pos")
-        && data["pos"].is_array()) {
-        frameJson.pos = ManagerUtilities::getVector2iFromJson(data["pos"]);
+        && data["pos"].is_array()
+        && data["pos"].size() == 2) {
+        frameJson.pos[0] = data["pos"][0];
+        frameJson.pos[1] = data["pos"][1];
     }
     else {
         spdlog::error("Invalid frame position!");
@@ -177,8 +181,9 @@ Animation AnimationManager::createAnimation(const AnimationJson& animationJson) 
 }
 Frame AnimationManager::createFrame(const FrameJson& frameJson) {
     Frame frame;
-
-    frame.rect = sf::IntRect(frameJson.pos, frameJson.size);
+    sf::Vector2i pos{frameJson.pos[0], frameJson.pos[1]};
+    sf::Vector2i size{frameJson.size[0], frameJson.size[1]};
+    frame.rect = sf::IntRect(pos, size);
     frame.duration = frameJson.duration;
 
     return frame;

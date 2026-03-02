@@ -12,9 +12,9 @@
 #include "SFML/Graphics/Sprite.hpp"
 
 struct ModelJson {
-    std::filesystem::path animationFile;
-    std::vector<std::filesystem::path> textureFiles;
-    std::filesystem::path defaultTexture;
+    std::string animationFile;
+    std::vector<std::string> textureFiles;
+    std::string defaultTexture;
 };
 
 class Model {
@@ -39,9 +39,6 @@ public:
     void setTexture(const std::filesystem::path& path);
 
 private:
-    bool isSpriteInitialised() const;
-    void initialiseSprite();
-
     std::optional<AnimationSet> animations;
     std::map<std::filesystem::path, Texture*> textures;
     sf::Sprite sprite;

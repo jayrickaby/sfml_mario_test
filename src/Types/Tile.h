@@ -9,7 +9,7 @@
 #include "Model.h"
 
 struct TileJson {
-    std::filesystem::path modelFile;
+    std::string modelFile;
 };
 
 class Tile {

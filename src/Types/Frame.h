@@ -8,9 +8,9 @@
 
 
 struct FrameJson {
-    sf::Vector2i size = {16,16};
-    sf::Vector2i pos = {0,0};
-    float duration = 1.f;
+    int size[2]{16,16};
+    int pos[2]{0,0};
+    float duration{1.f};
 };
 
 struct Frame {

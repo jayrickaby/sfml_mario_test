@@ -87,7 +87,7 @@ ModelJson ModelManager::parseModelJson(const nlohmann::basic_json<>& data) {
             throw std::invalid_argument("Invalid texture file path!");
         }
 
-        if (!std::ranges::contains(modelJson.textureFiles, path)) {
+        if (!std::ranges::contains(modelJson.textureFiles, path.string())) {
             modelJson.textureFiles.emplace_back(path);
         }
     }
