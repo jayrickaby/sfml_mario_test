@@ -11,6 +11,7 @@
 #include "GameManager.h"
 #include "imgui.h"
 #include "imgui-SFML.h"
+#include "TextureManager.h"
 #include "../Globals.h"
 #include "spdlog/spdlog.h"
 #include "../Types/Tile.h"
@@ -21,6 +22,8 @@ Level* EditorManager::level = nullptr;
 
 std::string EditorManager::selectedObject;
 std::optional<sf::Sprite> EditorManager::selectedObjectSprite;
+
+EditorTool EditorManager::currentTool = EditorTool::Pencil;
 
 sf::Vector2f EditorManager::mouseGridPosition;
 std::optional<sf::Text> EditorManager::mousePositionText;
@@ -87,12 +90,18 @@ void EditorManager::update() {
 }
 
 void EditorManager::handleInput() {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !selectedObject.empty()) {
-        // Multiply by 16 after dividing and floored so that it 'snaps' to grid
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        const std::pair grid {static_cast<int>(mouseGridPosition.x), static_cast<int>(mouseGridPosition.y)};
         const std::pair coords{static_cast<int>(mouseGridPosition.x * 16),static_cast<int>(mouseGridPosition.y * 16)};
-        //@TODO Fix QBlock animation Offset -> GameManager has global animation timer?? Or all animations reset when a animated tile is created
-        level->tiles[coords] = TileManager::getTile(selectedObject);
-        level->tiles[coords].setPosition(sf::Vector2i{coords.first, coords.second});
+        if (currentTool == EditorTool::Pencil && !selectedObject.empty()) {
+            // Multiply by 16 after dividing and floored so that it 'snaps' to grid
+            //@TODO Fix QBlock animation Offset -> GameManager has global animation timer?? Or all animations reset when a animated tile is created
+            level->tiles[grid] = TileManager::getTile(selectedObject);
+            level->tiles[grid].setPosition(sf::Vector2i{coords.first, coords.second});
+        }
+        else if (currentTool == EditorTool::Eraser) {
+            level->tiles.erase(grid);
+        }
     }
 }
 
@@ -137,12 +146,29 @@ void EditorManager::loadTiles() {
 void EditorManager::createEditor() {
     ImGui::Begin("Editor");
 
+    sf::Sprite pencilSprite(*TextureManager::getAtlas());
+    pencilSprite.setTextureRect(TextureManager::getTexture("editor/pencil.png")->rect);
+
+    if (ImGui::ImageButton("Pencil", pencilSprite, sf::Vector2f({32.f,32.f}))) {
+        currentTool = EditorTool::Pencil;
+    };
+
+    sf::Sprite eraserSprite(*TextureManager::getAtlas());
+    eraserSprite.setTextureRect(TextureManager::getTexture("editor/pencil.png")->rect);
+
+    if (ImGui::ImageButton("Eraser", eraserSprite, sf::Vector2f({32.f,32.f}))) {
+        currentTool = EditorTool::Eraser;
+    };
+
+    ImGui::NewLine();
+
     if (ImGui::CollapsingHeader("Tiles")) {
         for (auto& tile : tiles) {
             tile.second.update();
             sf::Sprite sprite = *tile.second.getModelFile()->getSprite();
             if (ImGui::ImageButton(tile.first.c_str(), sprite, sf::Vector2f{32,32})){
                 selectedObject = tile.first;
+                currentTool = EditorTool::Pencil;
             }
         }
     }

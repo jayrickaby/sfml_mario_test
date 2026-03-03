@@ -9,6 +9,11 @@
 
 struct Level;
 
+enum class EditorTool {
+    Pencil,
+    Eraser
+};
+
 class EditorManager {
 public:
     EditorManager() = default;
@@ -33,6 +38,8 @@ private:
 
     static std::string selectedObject;
     static std::optional<sf::Sprite> selectedObjectSprite;
+
+    static EditorTool currentTool;
 
     static sf::Vector2f mouseGridPosition;
     static std::optional<sf::Text> mousePositionText;
