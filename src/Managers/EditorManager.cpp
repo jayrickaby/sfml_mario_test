@@ -168,6 +168,8 @@ void EditorManager::createEditor() {
         currentTool = EditorTool::Pencil;
     };
 
+    ImGui::SameLine();
+
     sf::Sprite eraserSprite(*TextureManager::getAtlas());
     eraserSprite.setTextureRect(TextureManager::getTexture("editor/pencil.png")->rect);
 
@@ -175,8 +177,6 @@ void EditorManager::createEditor() {
     if (ImGui::ImageButton("Eraser", eraserSprite, sf::Vector2f({32.f,32.f}))) {
         currentTool = EditorTool::Eraser;
     };
-
-    ImGui::NewLine();
 
     if (ImGui::CollapsingHeader("Tiles")) {
         for (auto& tile : tiles) {
@@ -186,6 +186,7 @@ void EditorManager::createEditor() {
                 selectedObject = tile.first;
                 currentTool = EditorTool::Pencil;
             }
+            ImGui::SameLine();
         }
     }
 
@@ -198,7 +199,7 @@ void EditorManager::createEditor() {
     };
 
     if (ImGui::CollapsingHeader("Level Properties")) {
-        if (ImGui::ColorEdit3("Level Colour", backgroundColour, ImGuiColorEditFlags_NoInputs)) {
+        if (ImGui::ColorEdit3("Background Colour", backgroundColour, ImGuiColorEditFlags_NoInputs)) {
             level->properties.backgroundColour.r = static_cast<uint8_t>(backgroundColour[0] * 255.0f);
             level->properties.backgroundColour.g = static_cast<uint8_t>(backgroundColour[1] * 255.0f);
             level->properties.backgroundColour.b = static_cast<uint8_t>(backgroundColour[2] * 255.0f);
