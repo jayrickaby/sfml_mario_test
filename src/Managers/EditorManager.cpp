@@ -22,6 +22,7 @@ Level* EditorManager::level = nullptr;
 
 std::string EditorManager::selectedObject;
 std::optional<sf::Sprite> EditorManager::selectedObjectSprite;
+sf::RectangleShape EditorManager::eraseObjectRect;
 
 EditorTool EditorManager::currentTool = EditorTool::Pencil;
 
@@ -43,6 +44,9 @@ void EditorManager::initialise(sf::RenderWindow* targetWindow, sf::View* targetV
         spdlog::info("ImGui Initialised!");
     };
     loadTiles();
+    eraseObjectRect.setFillColor({255,255,255,128});
+    eraseObjectRect.setSize({16.f,16.f});
+
     mousePositionText->setScale({0.25f, 0.25f});
     mousePositionText->setOutlineColor(sf::Color::Black);
     mousePositionText->setOutlineThickness(1);
@@ -74,14 +78,19 @@ void EditorManager::update() {
         mouseGridPosition = {std::floor(mouseCoordPosition.x / 16), std::floor(mouseCoordPosition.y / 16)};
         mousePositionText->setPosition({mouseCoordPosition.x, mouseCoordPosition.y - 8});
 
-        if (!selectedObject.empty() && selectedObjectSprite.has_value()) {
-            selectedObjectSprite->setTextureRect(tiles[selectedObject].getModelFile()->getIntRect());
-            // Multiply by 16 after dividing and floored so that it 'snaps' to grid
-            selectedObjectSprite->setPosition({mouseGridPosition.x * 16, mouseGridPosition.y * 16});
-            selectedObjectSprite->setColor({255,255,255,192});
+        if (currentTool == EditorTool::Pencil) {
+            if (!selectedObject.empty() && selectedObjectSprite.has_value()) {
+                selectedObjectSprite->setTextureRect(tiles[selectedObject].getModelFile()->getIntRect());
+                // Multiply by 16 after dividing and floored so that it 'snaps' to grid
+                selectedObjectSprite->setPosition({mouseGridPosition.x * 16, mouseGridPosition.y * 16});
+                selectedObjectSprite->setColor({255,255,255,192});
+            }
+            else if (!selectedObject.empty() && !selectedObjectSprite.has_value()) {
+                selectedObjectSprite = *tiles[selectedObject].getModelFile()->getSprite();
+            }
         }
-        else if (!selectedObject.empty() && !selectedObjectSprite.has_value()) {
-            selectedObjectSprite = *tiles[selectedObject].getModelFile()->getSprite();
+        else if (currentTool == EditorTool::Eraser) {
+            eraseObjectRect.setPosition({mouseGridPosition.x*16, mouseGridPosition.y*16});
         }
 
         const std::string text{"(" + std::to_string(mouseGridPosition.x) + ", " + std::to_string(mouseGridPosition.y) + ")"};
@@ -115,8 +124,11 @@ void EditorManager::draw() {
         throw std::runtime_error("Editor Manager has no attached window!");
     }
     if (enabled) {
-        if (selectedObjectSprite.has_value()) {
+        if (selectedObjectSprite.has_value() && currentTool == EditorTool::Pencil) {
             window->draw(*selectedObjectSprite);
+        }
+        else if (currentTool == EditorTool::Eraser){
+            window->draw(eraseObjectRect);
         }
         ImGui::SFML::Render(*window);
         if (mousePositionText.has_value()) {
@@ -156,6 +168,7 @@ void EditorManager::createEditor() {
     sf::Sprite eraserSprite(*TextureManager::getAtlas());
     eraserSprite.setTextureRect(TextureManager::getTexture("editor/pencil.png")->rect);
 
+    //@TODO Add InputManager in order to add keybinds for Pencil & Eraser
     if (ImGui::ImageButton("Eraser", eraserSprite, sf::Vector2f({32.f,32.f}))) {
         currentTool = EditorTool::Eraser;
     };
