@@ -38,7 +38,7 @@ private:
 
     static std::string selectedObject;
     static std::optional<sf::Sprite> selectedObjectSprite;
-    static sf::RectangleShape eraseObjectRect;
+    static sf::RectangleShape tileHighlight;
 
     static EditorTool currentTool;
 

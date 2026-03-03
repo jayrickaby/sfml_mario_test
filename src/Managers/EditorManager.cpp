@@ -22,7 +22,7 @@ Level* EditorManager::level = nullptr;
 
 std::string EditorManager::selectedObject;
 std::optional<sf::Sprite> EditorManager::selectedObjectSprite;
-sf::RectangleShape EditorManager::eraseObjectRect;
+sf::RectangleShape EditorManager::tileHighlight;
 
 EditorTool EditorManager::currentTool = EditorTool::Pencil;
 
@@ -44,8 +44,8 @@ void EditorManager::initialise(sf::RenderWindow* targetWindow, sf::View* targetV
         spdlog::info("ImGui Initialised!");
     };
     loadTiles();
-    eraseObjectRect.setFillColor({255,255,255,128});
-    eraseObjectRect.setSize({16.f,16.f});
+    tileHighlight.setSize({14.f,14.f});
+    tileHighlight.setOutlineThickness(1);
 
     mousePositionText->setScale({0.25f, 0.25f});
     mousePositionText->setOutlineColor(sf::Color::Black);
@@ -78,6 +78,9 @@ void EditorManager::update() {
         mouseGridPosition = {std::floor(mouseCoordPosition.x / 16), std::floor(mouseCoordPosition.y / 16)};
         mousePositionText->setPosition({mouseCoordPosition.x, mouseCoordPosition.y - 8});
 
+        tileHighlight.setFillColor({255,255,255,128});
+        tileHighlight.setOutlineColor({255,255,255,255});
+
         if (currentTool == EditorTool::Pencil) {
             if (!selectedObject.empty() && selectedObjectSprite.has_value()) {
                 selectedObjectSprite->setTextureRect(tiles[selectedObject].getModelFile()->getIntRect());
@@ -90,8 +93,10 @@ void EditorManager::update() {
             }
         }
         else if (currentTool == EditorTool::Eraser) {
-            eraseObjectRect.setPosition({mouseGridPosition.x*16, mouseGridPosition.y*16});
+            tileHighlight.setFillColor({255,0,0, 128});
+            tileHighlight.setOutlineColor({255,0,0, 255});
         }
+        tileHighlight.setPosition({mouseGridPosition.x*16 + 1, mouseGridPosition.y*16 + 1});
 
         const std::string text{"(" + std::to_string(mouseGridPosition.x) + ", " + std::to_string(mouseGridPosition.y) + ")"};
         mousePositionText->setString(text);
@@ -127,9 +132,7 @@ void EditorManager::draw() {
         if (selectedObjectSprite.has_value() && currentTool == EditorTool::Pencil) {
             window->draw(*selectedObjectSprite);
         }
-        else if (currentTool == EditorTool::Eraser){
-            window->draw(eraseObjectRect);
-        }
+        window->draw(tileHighlight);
         ImGui::SFML::Render(*window);
         if (mousePositionText.has_value()) {
             window->draw(*mousePositionText);
