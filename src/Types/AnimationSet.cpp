@@ -28,10 +28,10 @@ void AnimationSet::update() {
     }
 }
 void AnimationSet::reset() {
-    Animation& currentAnimation = animations[currentAnimationName];
-    currentAnimation.frameIndex = 0;
-    currentAnimation.frameTimer = 0;
-    currentAnimation.speed = currentAnimation.defaultSpeed;
+    Animation* currentAnimation = &animations[currentAnimationName];
+    currentAnimation->frameIndex = 0;
+    currentAnimation->frameTimer = 0;
+    currentAnimation->speed = currentAnimation->defaultSpeed;
 }
 
 bool AnimationSet::isAnimation(const std::string& name) const {

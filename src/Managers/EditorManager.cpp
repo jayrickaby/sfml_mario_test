@@ -30,7 +30,7 @@ sf::Vector2f EditorManager::mouseGridPosition;
 std::optional<sf::Text> EditorManager::mousePositionText;
 
 std::map<std::string, Tile> EditorManager::tiles;
-bool EditorManager::enabled = true;
+bool EditorManager::enabled = false;
 bool EditorManager::initialised = false;
 
 void EditorManager::initialise(sf::RenderWindow* targetWindow, sf::View* targetView) {
@@ -109,8 +109,9 @@ void EditorManager::handleInput() {
         const std::pair coords{static_cast<int>(mouseGridPosition.x * 16),static_cast<int>(mouseGridPosition.y * 16)};
         if (currentTool == EditorTool::Pencil && !selectedObject.empty()) {
             // Multiply by 16 after dividing and floored so that it 'snaps' to grid
-            //@TODO Fix QBlock animation Offset -> GameManager has global animation timer?? Or all animations reset when a animated tile is created
             level->tiles[grid] = TileManager::getTile(selectedObject);
+            level->tiles[grid].update();
+            level->tiles[grid].reset();
             level->tiles[grid].setPosition(sf::Vector2i{coords.first, coords.second});
         }
         else if (currentTool == EditorTool::Eraser) {
@@ -180,6 +181,7 @@ void EditorManager::createEditor() {
     if (ImGui::CollapsingHeader("Tiles")) {
         for (auto& tile : tiles) {
             tile.second.update();
+            tile.second.reset();
             sf::Sprite sprite = *tile.second.getModelFile()->getSprite();
             if (ImGui::ImageButton(tile.first.c_str(), sprite, sf::Vector2f{32,32})){
                 selectedObject = tile.first;

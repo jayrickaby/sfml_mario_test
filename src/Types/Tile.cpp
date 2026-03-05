@@ -15,6 +15,10 @@ void Tile::draw(sf::RenderTarget& target) const {
     model.draw(target);
 }
 
+void Tile::reset() {
+    model.reset();
+}
+
 Model* Tile::getModelFile() {
     return &model;
 }

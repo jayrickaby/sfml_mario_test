@@ -19,6 +19,7 @@ public:
 
     void update();
     void draw(sf::RenderTarget& target) const;
+    void reset();
 
     // Getters
     Model* getModelFile();

@@ -33,6 +33,12 @@ void Model::draw(sf::RenderTarget& target) const {
     target.draw(sprite);
 }
 
+void Model::reset() {
+    if (animations.has_value()) {
+        animations->reset();
+    }
+}
+
 bool Model::isTexture(const std::filesystem::path& path) const {
     return textures.contains(path);
 }

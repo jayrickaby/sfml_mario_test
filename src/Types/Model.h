@@ -23,6 +23,7 @@ public:
 
     void update();
     void draw(sf::RenderTarget& target) const;
+    void reset();
 
     // Validators
     bool isTexture(const std::filesystem::path& path) const;

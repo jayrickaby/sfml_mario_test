@@ -42,17 +42,36 @@ void GameManager::update() {
         spdlog::error("Tried to update GameManager, but it is not initialised!");
         throw std::runtime_error("GameManager is not initialised!");
     }
+
     while (const auto event = window->pollEvent()) {
         EditorManager::processEvents(event);
         if (event->is<sf::Event::Closed>()) {
             window->close();
         }
+        else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+        {
+            if (keyPressed->code == sf::Keyboard::Key::F3 && EditorManager::isEnabled()) {
+                EditorManager::disable();
+            }
+            else if (keyPressed->code == sf::Keyboard::Key::F3 && !EditorManager::isEnabled()) {
+                for (auto& tile : level.tiles) {
+                    tile.second.reset();
+                    tile.second.update();
+                }
+                EditorManager::enable();
+            }
+        }
     }
 
     Globals::update(window);
-    EditorManager::update();
-    for (auto& tile : level.tiles | std::views::values) {
-        tile.update();
+
+    if (!EditorManager::isEnabled()) {
+        for (auto& tile : level.tiles | std::views::values) {
+            tile.update();
+        }
+    }
+    else {
+        EditorManager::update();
     }
 }
 
@@ -66,7 +85,9 @@ void GameManager::draw() {
     for (const auto& tile : level.tiles | std::views::values) {
         tile.draw(*window);
     }
-    EditorManager::draw();
+    if (EditorManager::isEnabled()) {
+        EditorManager::draw();
+    }
 }
 
 bool GameManager::isInitialised() {
