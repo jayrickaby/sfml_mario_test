@@ -171,13 +171,12 @@ void EditorManager::createEditor() {
     ImGui::SameLine();
 
     sf::Sprite eraserSprite(*TextureManager::getAtlas());
-    eraserSprite.setTextureRect(TextureManager::getTexture("editor/pencil.png")->rect);
+    eraserSprite.setTextureRect(TextureManager::getTexture("editor/eraser.png")->rect);
 
     //@TODO Add InputManager in order to add keybinds for Pencil & Eraser
     if (ImGui::ImageButton("Eraser", eraserSprite, sf::Vector2f({32.f,32.f}))) {
         currentTool = EditorTool::Eraser;
     };
-
     if (ImGui::CollapsingHeader("Tiles")) {
         for (auto& tile : tiles) {
             tile.second.update();
